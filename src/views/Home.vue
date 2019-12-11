@@ -1,18 +1,22 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <md-empty-state
+      md-icon="how_to_reg"
+      md-label="No cookbook selected"
+      md-description="Please select a cookbook or create a new one."
+    >
+      <md-button class="md-primary md-raised">Create new cookbook</md-button>
+    </md-empty-state>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import CookbooksDrawer from '@/components/CookbooksDrawer.vue'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    CookbooksDrawer
   }
 }
 </script>
