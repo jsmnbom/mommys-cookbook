@@ -25,7 +25,9 @@
           </div>
 
           <md-menu-item>
-            <md-button class="md-accent logout" @click="logout">Sign out</md-button>
+            <md-button class="md-accent logout" @click="logout"
+              >Sign out</md-button
+            >
           </md-menu-item>
         </md-menu-content>
       </md-menu>
@@ -82,7 +84,7 @@ h3 {
 }
 @media (min-width:600px) {
  .menu-button {
-  display:none
+  display: none;
  }
 }
 </style>

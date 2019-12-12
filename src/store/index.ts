@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { auth, UserInfo } from 'firebase';
-import { CookbookValue } from '@/firebase-config';
+import { firebase, auth, UserInfo, CookbookValue} from '@/firebase'
 
 Vue.use(Vuex)
 
@@ -48,8 +47,8 @@ const store = new Vuex.Store({
   },
   actions: {
     login({ commit }) {
-      const provider = new auth.GoogleAuthProvider();
-      auth().signInWithPopup(provider).then((result: any) => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).then((result: any) => {
         commit('storeUser', result.user!)
       }).catch((error: any) => {
         const errorCode = error.code;
@@ -60,9 +59,10 @@ const store = new Vuex.Store({
       });
     },
     logout({ commit }) {
-      auth().signOut().then(() => {
+      // @ts-ignore
+      auth.signOut().then(() => {
         commit('logoutUser')
-      }).catch((error) => {
+      }).catch((error:any) => {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
@@ -78,7 +78,8 @@ const store = new Vuex.Store({
   }
 });
 
-auth().onAuthStateChanged((user: UserInfo | null) => {
+// @ts-ignore
+auth.onAuthStateChanged((user: UserInfo | null) => {
   if (user) {
     store.commit('storeUser', user)
   } else {

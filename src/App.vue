@@ -42,7 +42,6 @@ body {
   height: 100%;
   margin: 0
 }
-
 #app {
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -63,7 +62,7 @@ body {
 }
 .page-container .md-drawer {
   flex: 1;
-  max-width: 400px;
+  max-width: 350px;
 }
 .page-container main {
   flex: 1;

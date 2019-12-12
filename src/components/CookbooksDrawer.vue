@@ -15,6 +15,7 @@
         v-for="(cookbook, key) in cookbooks"
         :key="key"
         class="cookbook-item"
+        @click="toggleDrawer"
       >
         <md-avatar>
           <img :src="cookbook.thumbURL" alt="Avatar" />
@@ -23,7 +24,7 @@
           <span class="title">{{ cookbook.title }}</span>
           <span class="description">{{ cookbook.description }}</span>
         </span>
-        <md-button class="md-icon-button" @click="">
+        <md-button class="md-icon-button" @click.stop.prevent="toggleDrawer">
           <md-icon>more_vert</md-icon>
         </md-button>
       </md-list-item>
@@ -39,8 +40,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { firestore } from "firebase";
-import { db, CookbookValue } from "../firebase-config";
+import { db, CookbookValue, QuerySnapshot } from "@/firebase";
 
 export default Vue.extend({
   name: "CookbooksDrawer",
@@ -50,7 +50,7 @@ export default Vue.extend({
     fetchCookbooks() {
       console.log("fetchCookbooks");
       this.$store.commit("clearCookbooks");
-      const inner = (querySnapshot: firestore.QuerySnapshot) => {
+      const inner = (querySnapshot: QuerySnapshot) => {
         this.$store.commit(
           "addCookbooks",
           querySnapshot.docs.reduce(
