@@ -14,4 +14,5 @@ declare module 'vue-material/dist/components' {
   export function MdDrawer(Vue: typeof _Vue, options?: any): void
   export function MdApp(Vue: typeof _Vue, options?: any): void
   export function MdContent(Vue: typeof _Vue, options?: any): void
+  export function MdCard(Vue: typeof _Vue, options?: any): void
 }

@@ -16,16 +16,17 @@
 </template>
 
 <script>
+import Vue from "vue";
 import CookbooksDrawer from "@/components/CookbooksDrawer.vue";
 import { mapMutations } from "vuex";
 
-export default {
+export default Vue.extend({
   name: "home",
   components: {
     CookbooksDrawer
   },
   methods: mapMutations(["toggleDrawer"])
-};
+});
 </script>
 
 <style scoped>
