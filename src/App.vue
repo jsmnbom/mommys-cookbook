@@ -1,71 +1,43 @@
 <template>
-  <div id="app">
-    <Navbar class='header' />
-    <LoadingState v-if="!authLoaded" />
-    <MissingLoginState v-if="!loggedIn && authLoaded" />
-    <div class="page-container md-layout-columns">
-      <CookbooksDrawer v-if="loggedIn && authLoaded" />
-      <main
-        v-if="loggedIn && authLoaded"
-      >
-        <router-view></router-view>
-      </main>
-    </div>
-  </div>
+  <v-app>
+    <Navbar />
+    <CookbooksDrawer v-if="!loading && loggedIn" />
+    <v-content>
+      <LoadingState v-if="loading" />
+      <MissingLoginState v-if="!loading && !loggedIn" />
+      <router-view></router-view>
+    </v-content>
+  </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import Navbar from "./components/Navbar.vue";
-import MissingLoginState from "./components/MissingLoginState.vue";
-import LoadingState from "./components/LoadingState.vue";
 import CookbooksDrawer from "./components/CookbooksDrawer.vue";
+import Navbar from "./components/Navbar.vue";
+import LoadingState from "./components/LoadingState.vue";
+import MissingLoginState from "./components/MissingLoginState.vue";
 import { mapState } from "vuex";
 
 export default Vue.extend({
-  name: "app",
-  components: {
-    Navbar,
-    MissingLoginState,
-    LoadingState,
-    CookbooksDrawer
-  },
+  name: "App",
   computed: {
-    ...mapState(["loggedIn", "authLoaded"])
+    ...mapState(["loggedIn"]),
+    loading() {
+      return !this.$store.state.authLoaded;
+    }
+  },
+  components: {
+    CookbooksDrawer,
+    Navbar,
+    LoadingState,
+    MissingLoginState
   }
 });
 </script>
 
 <style>
-html,
-body {
-  height: 100%;
-  margin: 0
-}
-#app {
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  height: 100%;
-  flex-flow: column;
-}
-.header {
-  flex: 0 1 auto;
-}
-.page-container {
-  min-height: 300px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  flex: 1 1 auto;
-}
-.page-container .md-drawer {
-  flex: 1;
-  max-width: 350px;
-}
-.page-container main {
-  flex: 1;
-  flex-grow: 1;
+.v-avatar > img {
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>

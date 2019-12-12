@@ -1,40 +1,40 @@
 <template>
-  <md-drawer
-    md-permanent="full"
-    md-swipeable
-    :md-active="showDrawer"
-    @update:mdActive="toggleDrawer"
+  <v-navigation-drawer
+    :value="showDrawer"
+    @input="setDrawer"
+    :clipped="$vuetify.breakpoint.lgAndUp"
+    app
   >
-    <md-toolbar class="md-transparent" md-elevation="0">
-      <span class="md-title">Your cookbooks</span>
-    </md-toolbar>
-
-    <md-list>
-      <md-list-item
-        :to="{ name: 'cookbook', params: { id: key } }"
-        v-for="(cookbook, key) in cookbooks"
-        :key="key"
-        class="cookbook-item"
-        @click="toggleDrawer"
-      >
-        <md-avatar>
-          <img :src="cookbook.thumbURL" alt="Avatar" />
-        </md-avatar>
-        <span class="md-list-item-text">
-          <span class="title">{{ cookbook.title }}</span>
-          <span class="description">{{ cookbook.description }}</span>
-        </span>
-        <md-button class="md-icon-button" @click.stop.prevent="toggleDrawer">
-          <md-icon>more_vert</md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-list-item @click="" class="create">
-        <md-icon class="md-size-1x">add_circle</md-icon>
-        <span class="md-list-item-text">Create new cookbook</span>
-      </md-list-item>
-    </md-list>
-  </md-drawer>
+    <v-list dense>
+       <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="subtitle-1">Your cookbooks</v-list-item-title>
+          </v-list-item-content>
+       </v-list-item>
+      <template v-for="(cookbook, key) in cookbooks">
+        <v-list-item :key="key" :to="{ name: 'cookbook', params: { id: key } }">
+          <v-list-item-avatar>
+            <img :src="cookbook.thumbURL" />
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ cookbook.title }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+      <v-list-item @click="">
+        <v-list-item-icon class="ml-2">
+          <v-icon>mdi-plus-circle</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+              Create new cookbook
+            </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
@@ -46,7 +46,7 @@ export default Vue.extend({
   name: "CookbooksDrawer",
   computed: mapState(["showDrawer", "cookbooks"]),
   methods: {
-    ...mapMutations(["toggleDrawer"]),
+    ...mapMutations(["setDrawer"]),
     fetchCookbooks() {
       console.log("fetchCookbooks");
       this.$store.commit("clearCookbooks");

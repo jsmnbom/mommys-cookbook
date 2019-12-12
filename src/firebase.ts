@@ -121,4 +121,8 @@ interface RecipeList {
     [id: string]: RecipeValue;
 }
 
-export { firebase, db, CookbookValue, UserInfo, auth, QuerySnapshot, RecipeValue, RecipeList };
+interface CookbookList {
+    [id: string]: CookbookValue
+}
+
+export { firebase, db, CookbookValue, UserInfo, auth, QuerySnapshot, RecipeValue, RecipeList, CookbookList };

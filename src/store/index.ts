@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { firebase, auth, UserInfo, CookbookValue} from '@/firebase'
+import { firebase, auth, UserInfo, CookbookValue, CookbookList, RecipeList } from '@/firebase'
 
 Vue.use(Vuex)
 
@@ -9,19 +9,21 @@ const state: {
   loggedIn: boolean,
   authLoaded: boolean,
   showDrawer: boolean,
-  cookbooks: {[key: string]: CookbookValue},
+  cookbooks: CookbookList,
+  recipes: { [id: string]: RecipeList }
 } = {
   userInfo: null,
   loggedIn: false,
   authLoaded: false,
-  showDrawer: false,
-  cookbooks: {}
+  showDrawer: true,
+  cookbooks: {},
+  recipes: {}
 };
 
 const store = new Vuex.Store({
   state: state,
   mutations: {
-    storeUser(state, userInfo) {
+    storeUser(state, userInfo: UserInfo) {
       state.userInfo = userInfo;
       state.loggedIn = true;
     },
@@ -35,6 +37,9 @@ const store = new Vuex.Store({
     toggleDrawer(state) {
       state.showDrawer = !state.showDrawer;
     },
+    setDrawer(state, open: boolean) {
+      state.showDrawer = open;
+    },
     clearCookbooks(state) {
       state.cookbooks = {}
     },
@@ -43,6 +48,14 @@ const store = new Vuex.Store({
         ...state.cookbooks,
         ...cookbooks
       }
+    },
+    clearRecipes(state, cookbookId) {
+      Vue.set(state.recipes, cookbookId, {});
+    },
+    setRecipes(state, {
+      cookbookId, recipes
+    }) {
+      Vue.set(state.recipes, cookbookId, recipes);
     }
   },
   actions: {
@@ -62,7 +75,7 @@ const store = new Vuex.Store({
       // @ts-ignore
       auth.signOut().then(() => {
         commit('logoutUser')
-      }).catch((error:any) => {
+      }).catch((error: any) => {
         const errorCode = error.code;
         const errorMessage = error.message;
       });

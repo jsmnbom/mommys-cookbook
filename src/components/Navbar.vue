@@ -1,42 +1,45 @@
 <template>
-  <nav>
-    <md-toolbar class="md-accent" md-elevation="2">
-      <md-button class="md-icon-button menu-button" @click="toggleDrawer">
-        <md-icon>menu</md-icon>
-      </md-button>
+  <v-app-bar
+    :clipped-left="$vuetify.breakpoint.lgAndUp"
+    app
+    color="blue darken-3"
+    dark
+  >
+    <v-app-bar-nav-icon @click.stop="toggleDrawer" v-if="loggedIn"/>
+    <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
+      <span>Mommy's Cookbook</span>
+    </v-toolbar-title>
 
-      <h3 class="md-title" style="flex: 1">Mommy's Cookbook</h3>
+    <v-spacer />
 
-      <md-menu v-if="loggedIn" md-align-trigger>
-        <md-button class="md-icon-button" md-menu-trigger>
-          <md-avatar>
+    <v-menu offset-y close-on-click v-if="loggedIn">
+      <template v-slot:activator="{ on }">
+        <v-btn text icon v-on="on">
+          <v-avatar>
             <img :src="userPhotoURL" alt="Avatar" />
-          </md-avatar>
-        </md-button>
+          </v-avatar>
+        </v-btn>
+      </template>
 
-        <md-menu-content>
-          <div class="author-card">
-            <md-avatar class="md-large">
-              <img :src="userPhotoURL" alt="Avatar" />
-            </md-avatar>
-            <div class="author-card-info">
-              <span>{{ userDisplayName }}</span>
-            </div>
+      <v-list>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img :src="userPhotoURL"></v-img>
+          </v-list-item-avatar>
+          <div>
+            <v-list-item-subtitle>Logged in as</v-list-item-subtitle>
+            <v-list-item-title class="subtitle-1">{{
+              userDisplayName
+            }}</v-list-item-title>
           </div>
-
-          <md-menu-item>
-            <md-button class="md-accent logout" @click="logout"
-              >Sign out</md-button
-            >
-          </md-menu-item>
-        </md-menu-content>
-      </md-menu>
-
-      <md-button v-else class="md-primary md-raised" @click="login"
-        >Login</md-button
-      >
-    </md-toolbar>
-  </nav>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item @click="logout">
+          <v-list-item-title class="text-center red--text">Sign out</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </v-app-bar>
 </template>
 
 <script lang="ts">
@@ -55,36 +58,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="stylus" scoped>
-h3 {
-  text-align: start;
-}
-.author-card {
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-
-  .md-avatar {
-    margin-right: 16px;
-  }
-
-  .author-card-info {
-    display: flex;
-    flex-flow: column;
-    flex: 1;
-  }
-
-  span {
-    font-size: 16px;
-  }
-}
-.logout {
-  flex: 1;
-}
-@media (min-width:600px) {
- .menu-button {
-  display: none;
- }
-}
-</style>
