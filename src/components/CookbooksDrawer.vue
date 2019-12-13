@@ -4,33 +4,64 @@
     @input="setDrawer"
     :clipped="$vuetify.breakpoint.lgAndUp"
     app
+    width="350"
   >
     <v-list dense>
-       <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="subtitle-1">Your cookbooks</v-list-item-title>
-          </v-list-item-content>
-       </v-list-item>
-      <template v-for="(cookbook, key) in cookbooks">
-        <v-list-item :key="key" :to="{ name: 'cookbook', params: { id: key } }">
-          <v-list-item-avatar>
-            <img :src="cookbook.thumbURL" />
-          </v-list-item-avatar>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="subtitle-1"
+            >Your cookbooks</v-list-item-title
+          >
+        </v-list-item-content>
+      </v-list-item>
+      <template v-for="item in items">
+        <v-list-item
+          :key="item.key"
+          v-if="item.type == 'recipe'"
+          link
+          @click.stop
+          :input-value="recipeActive(item.key)"
+        >
           <v-list-item-content>
             <v-list-item-title>
-              {{ cookbook.title }}
+              {{ item.recipe.title }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item
+          :key="item.key"
+          v-if="item.type == 'cookbook'"
+          link
+          @click="toCookbook(item.key)"
+          :input-value="cookbookActive(item.key)"
+        >
+          <v-list-item-avatar color="grey lighten-3">
+            <v-img
+              v-if="item.cookbook.thumbURL"
+              :src="item.cookbook.thumbURL"
+            />
+            <v-icon v-else >mdi-image</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ item.cookbook.title }}
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon @click.stop="onEditCookbook(item.key)" @mousedown.stop>
+              <v-icon color="grey lighten-1">mdi-dots-vertical</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
       </template>
-      <v-list-item @click="">
+      <v-list-item @click="$store.commit('createCookbook')">
         <v-list-item-icon class="ml-2">
           <v-icon>mdi-plus-circle</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-              Create new cookbook
-            </v-list-item-title>
+            Create new cookbook
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -44,32 +75,63 @@ import { db, CookbookValue, QuerySnapshot } from "@/firebase";
 
 export default Vue.extend({
   name: "CookbooksDrawer",
-  computed: mapState(["showDrawer", "cookbooks"]),
+  computed: {
+    ...mapState(["showDrawer", "cookbooks", "recipes"]),
+    items() {
+      const arr = [];
+      for (const [cookbookId, cookbook] of Object.entries(this.cookbooks)) {
+        arr.push({
+          type: "cookbook",
+          key: cookbookId,
+          cookbook
+        });
+        if (
+          this.$route.name &&
+          this.$route.name.startsWith("recipe") &&
+          cookbookId == this.$route.params.cookbookId &&
+          cookbookId in this.recipes
+        ) {
+          const recipeId = this.$route.params.recipeId;
+          const recipe = this.recipes[cookbookId][recipeId];
+          arr.push({
+            type: "recipe",
+            key: recipeId,
+            recipe
+          });
+        }
+      }
+      return arr;
+    }
+  },
   methods: {
     ...mapMutations(["setDrawer"]),
     fetchCookbooks() {
-      console.log("fetchCookbooks");
       this.$store.commit("clearCookbooks");
-      const inner = (querySnapshot: QuerySnapshot) => {
-        this.$store.commit(
-          "addCookbooks",
-          querySnapshot.docs.reduce(
-            (map: { [id: string]: CookbookValue }, doc) => {
-              const data = doc.data();
-              const cookbook = CookbookValue.fromObject(data);
-              map[doc.id] = cookbook;
-              return map;
-            },
-            {}
-          )
-        );
-      };
-      db.collection("cookbooks")
-        .where("authorUid", "==", this.$store.state.userInfo.uid)
-        .onSnapshot(inner);
-      db.collection("cookbooks")
-        .where("sharedWith", "array-contains", this.$store.state.userInfo.email)
-        .onSnapshot(inner);
+      this.$store.dispatch("fetchCookbooks");
+    },
+    toCookbook(cookbookId: string) {
+      if (
+        cookbookId != this.$route.params.cookbookId ||
+        this.$route.name != "cookbook"
+      ) {
+        this.$router.push({ name: "cookbook", params: { cookbookId } });
+      }
+    },
+    cookbookActive(cookbookId: string) {
+      return (
+        cookbookId == this.$route.params.cookbookId &&
+        this.$route.name == "cookbook"
+      );
+    },
+    recipeActive(recipeId: string) {
+      return (
+        recipeId == this.$route.params.recipeId &&
+        this.$route.name &&
+        this.$route.name.startsWith("recipe")
+      );
+    },
+    onEditCookbook(cookbookId: string) {
+      this.$store.commit("editCookbook", cookbookId);
     }
   },
   created() {
@@ -77,11 +139,13 @@ export default Vue.extend({
       state => state.loggedIn,
       loggedIn => {
         if (loggedIn) {
+          // @ts-ignore
           this.fetchCookbooks();
         }
       }
     );
     if (this.$store.state.loggedIn) {
+      // @ts-ignore
       this.fetchCookbooks();
     }
   }

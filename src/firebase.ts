@@ -1,6 +1,7 @@
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import 'firebase/storage';
 
 const app = firebase.initializeApp({
     apiKey: 'AIzaSyD1PmMAyOsb_cnVxNMVszCWoo3Hx5IN9XU',
@@ -14,6 +15,9 @@ const app = firebase.initializeApp({
 
 const db = firebase.firestore();
 const auth = firebase.auth();
+const storage = firebase.storage();
+const TaskEvent = firebase.storage.TaskEvent;
+const TaskState = firebase.storage.TaskState;
 type UserInfo = firebase.UserInfo;
 type QuerySnapshot = firebase.firestore.QuerySnapshot;
 
@@ -125,4 +129,17 @@ interface CookbookList {
     [id: string]: CookbookValue
 }
 
-export { firebase, db, CookbookValue, UserInfo, auth, QuerySnapshot, RecipeValue, RecipeList, CookbookList };
+export {
+    firebase,
+    db,
+    CookbookValue,
+    UserInfo,
+    auth,
+    QuerySnapshot,
+    RecipeValue,
+    RecipeList,
+    CookbookList,
+    storage,
+    TaskEvent,
+    TaskState
+};
