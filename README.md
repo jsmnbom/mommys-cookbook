@@ -34,10 +34,13 @@ npm run lint
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-### Todo
+## Todo
 
 - Cookbook/recipe not found
 - Editing of recipes
-- Dark mode
+- Saving of dark mode
 - Sorting and fitlering of recipes
 - Icon
+- Tooltips
+- Add skeleton loaders
+- Drag and drop to sort ingredients

@@ -7,11 +7,17 @@
       <LoadingState v-if="loading" />
       <MissingLoginState v-if="!loading && !loggedIn" />
       <CookbookDialog />
-      <transition :name="transitionName" mode="out-in" @before-enter="beforeEnter">
-        <router-view :key="routerKey"></router-view>
+      <transition
+        :name="transitionName"
+        mode="out-in"
+        @before-enter="beforeEnter"
+      >
+        <keep-alive>
+          <router-view :key="routerKey"></router-view>
+        </keep-alive>
       </transition>
     </v-content>
-    <ActionButton/>
+    <ActionButton />
   </v-app>
 </template>
 
@@ -41,9 +47,6 @@ export default Vue.extend({
         key += this.$route.name;
         if (this.$route.params.cookbookId) {
           key += this.$route.params.cookbookId;
-        }
-        if (this.$route.params.recipeId) {
-          key += this.$route.params.recipeId;
         }
       }
       return key;
@@ -92,7 +95,6 @@ export default Vue.extend({
 </script>
 
 <style>
-
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.3s;

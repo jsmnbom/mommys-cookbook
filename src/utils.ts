@@ -1,4 +1,4 @@
-import {storage, TaskEvent, TaskState} from './firebase';
+import { storage, TaskEvent, TaskState } from './firebase';
 
 export function compressImage(
     file: File,
@@ -82,4 +82,8 @@ export function uploadFile(
 export function deleteFileFromDownloadURL(downloadURL: string): Promise<void> {
     const ref = storage.refFromURL(downloadURL);
     return ref.delete();
+}
+
+export function randomImgSrc(seed: string, blur: number = 0): string {
+    return `https://picsum.photos/seed/${seed}/640/360?blur=${blur} `
 }

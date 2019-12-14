@@ -1,5 +1,5 @@
 <template>
-  <v-fab-transition v-if="actionButton != null">
+  <v-fab-transition v-if="show">
     <v-btn
       fixed
       dark
@@ -9,7 +9,7 @@
       color="pink"
       :class="{ 'mb-12': bottomBarActive }"
       @click="onClick"
-      ><v-icon>{{icon}}</v-icon>
+      ><v-icon>{{ icon }}</v-icon>
     </v-btn>
   </v-fab-transition>
 </template>
@@ -20,26 +20,51 @@ import { mapState } from "vuex";
 
 export default Vue.extend({
   name: "ActionButton",
+  data: () => ({
+    icon: "",
+    show: false
+  }),
   computed: {
     ...mapState(["actionButton"]),
-    icon() {
-      if (this.actionButton == 'editRecipe') {
-        return 'mdi-pencil-outline'
-      } else if (this.actionButton == 'createRecipe') {
-        return 'mdi-plus'
-      }
-    },
-    bottomBarActive() {
+    bottomBarActive(): boolean {
       return (
-        this.$route.name &&
+        !!this.$route.name &&
         this.$route.name.startsWith("recipe") &&
         this.$vuetify.breakpoint.smAndDown
       );
     }
   },
+  created() {
+    this.$store.watch(
+      state => state.actionButton,
+      actionButton => {
+        if (!actionButton) {
+          this.show = false;
+          return;
+        }
+        if (actionButton) {
+          if (this.show) {
+            this.show = false;
+
+            setTimeout(() => {
+              this.icon = actionButton.icon;
+              this.show = true;
+            }, 200);
+          } else {
+            this.icon = actionButton.icon;
+            this.show = true;
+          }
+        }
+      }
+    );
+  },
   methods: {
     onClick() {
-      this.$store.commit(this.actionButton)
+      if (this.actionButton.action) {
+        this.$store.dispatch(this.actionButton.action);
+      } else if (this.actionButton.mutation) {
+        this.$store.commit(this.actionButton.mutation);
+      }
     }
   }
 });

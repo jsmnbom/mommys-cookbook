@@ -266,10 +266,9 @@ export default Vue.extend({
     async onCreate() {
       const cookbook = new CookbookValue(
         this.title,
-        "",
         this.$store.state.userInfo!.displayName!,
         this.$store.state.userInfo!.uid,
-        [],
+        this.sharedWith,
         this.img ? await this.handleImage() : ""
       );
 
@@ -299,7 +298,7 @@ export default Vue.extend({
         });
     },
     async onDelete() {
-      let res = await this.$dialog.confirm({
+      await this.$dialog.confirm({
         text: `Do you really want to delete ${this.title}?<br>This action cannot be undone.`,
         title: "",
         actions: {

@@ -1,66 +1,201 @@
 <template>
-  <v-container v-if="recipe">
-    <v-card v-if="hasBottomNav && ingredients">
-      <IngredientsList :value="recipe.ingredients" />
-    </v-card>
-    <v-card v-else-if="hasBottomNav">
-      <RecipeContent :value="recipe" />
-    </v-card>
+  <v-form ref="form" lazy-validation v-model="valid">
+    <v-container v-if="editedRecipe">
+      <RecipeIngredientsList
+        v-if="hasBottomNav && ingredients"
+        v-bind.sync="editedRecipe"
+        :saving="saving"
+        @update:addIngredientsText="addIngredientsText = $event"
+      />
+      <RecipeContent
+        v-else-if="hasBottomNav"
+        :saving="saving"
+        v-bind.sync="editedRecipe"
+        :recipeId="recipeId"
+        @update:imgFile="imgFile = $event"
+      />
 
-    <v-row align="start" justify="space-around" v-else>
-      <v-col cols="8">
-        <v-card class="pa-4">
-          <RecipeContent :value="recipe" />
-        </v-card>
-      </v-col>
-      <v-col cols="4">
-        <v-card>
-          <IngredientsList :value="recipe.ingredients" />
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-row align="start" justify="space-around" v-else>
+        <v-col cols="8">
+          <RecipeContent
+            :saving="saving"
+            v-bind.sync="editedRecipe"
+            :recipeId="recipeId"
+            @update:imgFile="imgFile = $event"
+          />
+        </v-col>
+        <v-col cols="4">
+          <RecipeIngredientsList
+            v-bind.sync="editedRecipe"
+            @update:addIngredientsText="addIngredientsText = $event"
+            :saving="saving"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { mapState } from "vuex";
-import IngredientsList from "@/components/IngredientsList.vue";
+import { Route } from "vue-router";
+import { v4 as uuid } from "uuid";
+
+import RecipeIngredientsList from "@/components/RecipeIngredientsList.vue";
 import RecipeContent from "@/components/RecipeContent.vue";
-import { RecipeList } from "@/firebase";
+import { RecipeValue, RecipeList, db } from "@/firebase";
+import { compressImage, uploadFile } from "@/utils";
 
 export default Vue.extend({
   name: "Recipe",
   props: ["cookbookId", "recipeId", "ingredients"],
+  data: () => ({
+    editedRecipe: null as RecipeValue | null,
+    saving: false,
+    valid: false,
+    imgFile: null as File | null,
+    uploadProgress: 0 as number | null,
+    addIngredientsText: ""
+  }),
   components: {
-    IngredientsList,
+    RecipeIngredientsList,
     RecipeContent
   },
   computed: {
-    hasBottomNav() {
+    hasBottomNav(): boolean {
       return this.$vuetify.breakpoint.smAndDown;
     },
     recipes(): RecipeList {
       return this.$store.state.recipes[this.cookbookId] || null;
     },
-    recipe() {
-      // @ts-ignore
+    recipe(): RecipeValue | null {
       return this.recipes && this.recipeId in this.recipes
-        ? //
-          // @ts-ignore
-          this.recipes[this.recipeId]
+        ? this.recipes[this.recipeId]
         : null;
     },
     ...mapState(["cookbooks", "bottomNavActive"])
   },
   mounted() {
-    if (!this.recipes) {
+    if (!this.recipe) {
       this.$store.dispatch("fetchRecipes", this.cookbookId);
+    } else {
+      (this.$refs.form as any).reset();
+      this.imgFile = null;
+      this.addIngredientsText = "";
+      this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
     }
-    this.$store.commit("setActionButton", "editRecipe");
+    // console.log(this.recipeId, this.cookbookId, this.recipes, this.recipe!);
+    // this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
+    this.updateActionButton();
+    this.$store.watch(
+      state => state.editingRecipe,
+      async editingRecipe => {
+        this.updateActionButton();
+        if (!editingRecipe) {
+          this.saving = true;
+
+          const editedRecipeObject = this.editedRecipe!.toObject();
+
+          if (this.imgFile) {
+            editedRecipeObject.thumbURL = await this.handleImage();
+          }
+
+          console.log(this.addIngredientsText);
+          if (this.addIngredientsText) {
+            console.log(editedRecipeObject.ingredients);
+            console.log(this.addIngredientsText.split(/\r?\n/));
+            editedRecipeObject.ingredients = [
+              ...editedRecipeObject.ingredients,
+              ...this.addIngredientsText
+                .split(/\r?\n/)
+                .map(ingredient => ingredient.trim())
+            ];
+            console.log(editedRecipeObject.ingredients);
+          }
+
+          if (editedRecipeObject !== this.recipe!.toObject()) {
+            db.collection("recipes")
+              .doc(this.recipeId)
+              .update(editedRecipeObject)
+              .then(() => {
+                this.$dialog.message.info("Recipe updated", {
+                  position: "bottom"
+                });
+                this.saving = false;
+              })
+              .catch(error => {
+                this.$dialog.message.error("Error updating recipe", {
+                  position: "bottom"
+                });
+                console.error(`Error updating recipe:`, error);
+                this.saving = false;
+              });
+          }
+        }
+      }
+    );
+  },
+  watch: {
+    $route(to: Route, from: Route) {
+      if (to.name && to.name.startsWith("recipe")) {
+        this.updateActionButton();
+      }
+    },
+    recipe() {
+      if (this.recipe) {
+        (this.$refs.form as any).reset();
+        this.imgFile = null;
+        this.addIngredientsText = "";
+        this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
+      }
+    }
   },
   beforeDestroy() {
     this.$store.commit("setActionButton", null);
+  },
+  methods: {
+    updateActionButton() {
+      if (this.$store.state.editingRecipe) {
+        this.$store.commit("setActionButton", {
+          icon: "mdi-check",
+          mutation: "saveRecipe"
+        });
+      } else {
+        this.$store.commit("setActionButton", {
+          icon: "mdi-pencil-outline",
+          mutation: "editRecipe"
+        });
+      }
+    },
+    async handleImage(): Promise<string> {
+      const blob = await compressImage(this.imgFile!, {
+        width: 1280,
+        height: 720
+      }).catch(error => {
+        this.$dialog.message.error("Error uplading image", {
+          position: "bottom"
+        });
+        console.error(`Error compressing image: `, error);
+      });
+      if (blob) {
+        const downloadURL = await uploadFile(
+          blob,
+          `images/recipe/${uuid()}.${this.imgFile!.name.split(".").pop()}`,
+          progress => (this.uploadProgress = progress)
+        ).catch(error => {
+          this.$dialog.message.error("Error uplading image", {
+            position: "bottom"
+          });
+          console.error(`Error uplading image:`, error);
+        });
+        this.uploadProgress = null;
+        if (downloadURL) {
+          return downloadURL;
+        }
+      }
+      return "";
+    }
   }
 });
 </script>

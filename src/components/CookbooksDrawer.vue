@@ -35,12 +35,17 @@
           @click="toCookbook(item.key)"
           :input-value="cookbookActive(item.key)"
         >
-          <v-list-item-avatar color="grey lighten-3">
+          <v-list-item-avatar
+            :class="{
+              grey: !item.cookbook.thumbURL,
+              'lighten-3': !item.cookbook.thumbURL
+            }"
+          >
             <v-img
               v-if="item.cookbook.thumbURL"
               :src="item.cookbook.thumbURL"
             />
-            <v-icon v-else >mdi-image</v-icon>
+            <v-icon v-else>mdi-image</v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>

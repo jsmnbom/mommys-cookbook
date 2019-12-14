@@ -4,13 +4,13 @@ import 'firebase/auth';
 import 'firebase/storage';
 
 const app = firebase.initializeApp({
-    apiKey: 'AIzaSyD1PmMAyOsb_cnVxNMVszCWoo3Hx5IN9XU',
-    authDomain: 'mommys-cookbook.firebaseapp.com',
-    databaseURL: 'https://mommys-cookbook.firebaseio.com',
-    projectId: 'mommys-cookbook',
-    storageBucket: 'gs://mommys-cookbook.appspot.com',
-    messagingSenderId: '703351919622',
-    appId: '1:703351919622:web:7d5632191f53b7d0',
+    apiKey: "AIzaSyCSC1XcitA3Q0RVSDpvoT9EAKjBCELwfso",
+    authDomain: "mommys-cookbook-2.firebaseapp.com",
+    databaseURL: "https://mommys-cookbook-2.firebaseio.com",
+    projectId: "mommys-cookbook-2",
+    storageBucket: "mommys-cookbook-2.appspot.com",
+    messagingSenderId: "595887947088",
+    appId: "1:595887947088:web:ddb1eb8872ff33313fc055"
 });
 
 const db = firebase.firestore();
@@ -24,7 +24,6 @@ type QuerySnapshot = firebase.firestore.QuerySnapshot;
 class CookbookValue {
     public static fromObject(data: {
         title: string,
-        description: string,
         authorDisplayName: string,
         authorUid: string,
         sharedWith: string[],
@@ -32,7 +31,6 @@ class CookbookValue {
     } | firebase.firestore.DocumentData) {
         return new this(
             data.title,
-            data.description,
             data.authorDisplayName,
             data.authorUid,
             [...data.sharedWith],
@@ -42,7 +40,6 @@ class CookbookValue {
 
     constructor(
         public title: string,
-        public description: string,
         public authorDisplayName: string,
         public authorUid: string,
         public sharedWith: string[],
@@ -52,7 +49,6 @@ class CookbookValue {
     public toObject() {
         return {
             title: this.title,
-            description: this.description,
             authorDisplayName: this.authorDisplayName,
             authorUid: this.authorUid,
             sharedWith: this.sharedWith,
@@ -68,14 +64,11 @@ export default class RecipeValue {
         content: string,
         tags: string,
         ingredients: string,
-        ratings: {
-            cost: number,
-            time: number,
-            tastiness: number,
-        },
+        ratingCost: number,
+        ratingTastiness: number
         cookbookId: string,
-        lastEaten: firebase.firestore.Timestamp | null,
         lastEdited: firebase.firestore.Timestamp | null,
+        thumbURL: string,
     } | firebase.firestore.DocumentData) {
         return new this(
             data.title,
@@ -83,10 +76,11 @@ export default class RecipeValue {
             data.content,
             [...data.tags],
             [...data.ingredients],
-            { ...data.ratings },
+            data.ratingCost,
+            data.ratingTastiness,
             data.cookbookId,
-            data.lastEaten ? data.lastEaten.toDate() : null,
             data.lastEdited ? data.lastEdited.toDate() : null,
+            data.thumbURL
         );
     }
 
@@ -96,14 +90,11 @@ export default class RecipeValue {
         public content: string,
         public tags: string[],
         public ingredients: string[],
-        public ratings: {
-            cost: number,
-            time: number,
-            tastiness: number,
-        },
+        public ratingCost: number,
+        public ratingTastiness: number,
         public cookbookId: string,
-        public lastEaten: Date | null,
         public lastEdited: Date | null,
+        public thumbURL: string
     ) { }
 
     public toObject() {
@@ -113,10 +104,11 @@ export default class RecipeValue {
             content: this.content,
             tags: this.tags,
             ingredients: this.ingredients,
-            ratings: this.ratings,
+            ratingCost: this.ratingCost,
+            ratingTastiness: this.ratingTastiness,
             cookbookId: this.cookbookId,
-            lastEaten: this.lastEaten,
             lastEdited: this.lastEdited,
+            thumbURL: this.thumbURL
         };
     }
 }

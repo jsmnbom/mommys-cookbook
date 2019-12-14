@@ -30,19 +30,20 @@ export default Vue.extend({
     };
   },
   computed: {
-    show() {
+    show(): boolean {
       return (
-        this.$route.name &&
+        !!this.$route.name &&
         this.$route.name.startsWith("recipe") &&
         this.$vuetify.breakpoint.smAndDown
       );
     },
-    btnToParams() {
+    btnToParams(): { cookbookId: string; recipeId: string } {
       return {
         cookbookId: this.$route.params.cookbookId,
         recipeId: this.$route.params.recipeId
       };
-    }
+    },
+    ...mapState(["editingRecipe"])
   },
   created() {
     this.$router.beforeEach((to, from, next) => {
@@ -52,6 +53,12 @@ export default Vue.extend({
         from.name == "recipe" &&
         to.name == "recipe/ingredients"
       ) {
+        // if (this.editingRecipe) {
+        //   this.$dialog.message.warning("Please save first!", {
+        //     position: "top"
+        //   });
+        //   return;
+        // }
         this.scrollPositions["recipe"] = {
           x: window.scrollX,
           y: window.scrollY
@@ -65,6 +72,12 @@ export default Vue.extend({
         from.name == "recipe/ingredients" &&
         to.name == "recipe"
       ) {
+        // if (this.editingRecipe) {
+        //   this.$dialog.message.warning("Please save first!", {
+        //     position: "top"
+        //   });
+        //   return;
+        // }
         this.scrollPositions["recipe/ingredients"] = {
           x: window.scrollX,
           y: window.scrollY
