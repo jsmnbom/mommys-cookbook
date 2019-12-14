@@ -5,17 +5,25 @@
     color="blue darken-3"
     dark
   >
-    <v-app-bar-nav-icon @click.stop="toggleDrawer" v-if="loggedIn"/>
+    <v-app-bar-nav-icon @click.stop="toggleDrawer" v-if="loggedIn" />
     <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
       <span>Mommy's Cookbook</span>
     </v-toolbar-title>
 
     <v-spacer />
 
+    <v-btn icon @click.stop>
+      <v-icon>mdi-github-circle</v-icon>
+    </v-btn>
+
+    <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+      <v-icon>mdi-brightness-4</v-icon>
+    </v-btn>
+
     <v-menu offset-y close-on-click v-if="loggedIn">
       <template v-slot:activator="{ on }">
-        <v-btn text icon v-on="on">
-          <v-avatar>
+        <v-btn text icon v-on="on" class="ml-2">
+          <v-avatar size="40">
             <img :src="userPhotoURL" alt="Avatar" />
           </v-avatar>
         </v-btn>
@@ -35,7 +43,9 @@
         </v-list-item>
         <v-divider></v-divider>
         <v-list-item @click="logout">
-          <v-list-item-title class="text-center red--text">Sign out</v-list-item-title>
+          <v-list-item-title class="text-center red--text"
+            >Sign out</v-list-item-title
+          >
         </v-list-item>
       </v-list>
     </v-menu>

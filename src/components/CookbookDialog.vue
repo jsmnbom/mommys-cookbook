@@ -7,125 +7,138 @@
     :hide-overlay="$vuetify.breakpoint.xsOnly"
     transition="dialog-bottom-transition"
   >
-    <v-toolbar dark color="primary" v-if="$vuetify.breakpoint.xsOnly">
-      <v-btn
-        icon
-        dark
-        @click="$store.commit('closeCookbookDialog')"
-        :disabled="saving"
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn dark text @click="onSave" :disabled="saving">{{
-          editing ? "Save" : "Create"
-        }}</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-    <v-card :loading="saving">
-      <template slot="progress">
-        <v-progress-linear
-          :value="uploadProgress"
-          :indeterminate="uploadProgress == null"
-          color="deep-purple accent-4"
-        ></v-progress-linear>
-      </template>
-      <v-card-text>
-        <v-container>
-          <v-row justify="center" align="center">
-            <v-col cols="auto">
-              <v-avatar size="128" color="grey lighten-3">
-                <v-img v-if="img" :src="img" />
-                <v-icon v-else x-large>mdi-image</v-icon>
-                <v-btn
-                  fab
-                  small
-                  class="avatar-btn-bottom-right"
-                  :disabled="saving"
-                  @click="$refs.imgUpload.click()"
-                >
-                  <v-icon>mdi-camera</v-icon>
-                </v-btn>
-              </v-avatar>
-            </v-col>
-          </v-row>
-          <v-row align="center" justify="center">
-            <v-col cols="12" md="8">
-              <v-text-field
-                outlined
-                ref="title"
-                label="Cookbook title"
-                required
-                :rules="[() => !!title || 'This field is required']"
-                v-model="title"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12">
-              <v-combobox
-                v-model="sharedWith"
-                :items="[]"
-                :search-input.sync="shareSearch"
-                label="Shared with"
-                outlined
-                deletable-chips
-                small-chips
-                multiple
-                :error-messages="sharedWithErrors"
-              >
-                <template v-slot:no-data>
-                  <v-list-item dense v-if="emailIsValid(shareSearch)">
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        Press <kbd>enter</kbd> to share with "<strong>{{
-                          shareSearch
-                        }}</strong
-                        >"
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </template></v-combobox
-              >
-            </v-col>
-          </v-row>
-        </v-container>
-        <input
-          v-show="false"
-          ref="imgUpload"
-          type="file"
-          @change="onImgUpload"
-        />
-      </v-card-text>
-      <v-spacer />
-      <v-card-actions :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }">
+    <v-form ref="form" lazy-validation v-model="valid">
+      <v-toolbar dark color="primary" v-if="$vuetify.breakpoint.xsOnly">
         <v-btn
-          text
-          color="red darken-1"
-          @click="onDelete"
-          v-if="editing"
-          :disabled="saving"
-        >
-          Delete cookbook
-        </v-btn>
-        <v-spacer v-if="!$vuetify.breakpoint.xsOnly"></v-spacer>
-        <v-btn
-          v-if="!$vuetify.breakpoint.xsOnly"
-          color="blue darken-1"
-          text
-          :disabled="saving"
+          icon
+          dark
           @click="$store.commit('closeCookbookDialog')"
-          >Close</v-btn
-        >
-        <v-btn
-          color="blue darken-1"
-          text
           :disabled="saving"
-          @click="onSave"
-          v-if="!$vuetify.breakpoint.xsOnly"
-          >{{ editing ? "Save" : "Create" }}</v-btn
         >
-      </v-card-actions>
-    </v-card>
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn dark text @click="onSave" :disabled="saving || !valid">{{
+            editing ? "Save" : "Create"
+          }}</v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-card :loading="saving">
+        <template slot="progress">
+          <v-progress-linear
+            :value="uploadProgress"
+            :indeterminate="uploadProgress == null"
+            color="deep-purple accent-4"
+          ></v-progress-linear>
+        </template>
+        <v-card-text>
+          <v-container>
+            <v-row justify="center" align="center">
+              <v-col cols="auto">
+                <v-avatar
+                  size="128"
+                  :class="{
+                    grey: true,
+                    'lighten-3': !$vuetify.theme.dark,
+                    'darken-2': $vuetify.theme.dark
+                  }"
+                >
+                  <v-img v-if="img" :src="img" />
+                  <v-icon v-else x-large>mdi-image</v-icon>
+                  <v-btn
+                    fab
+                    small
+                    class="avatar-btn-bottom-right"
+                    :disabled="saving"
+                    @click="$refs.imgUpload.click()"
+                  >
+                    <v-icon>mdi-camera</v-icon>
+                  </v-btn>
+                </v-avatar>
+              </v-col>
+            </v-row>
+            <v-row align="center" justify="center">
+              <v-col cols="12" md="8">
+                <v-text-field
+                  outlined
+                  ref="title"
+                  label="Cookbook title"
+                  required
+                  :rules="[() => !!title || 'This field is required']"
+                  v-model="title"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-combobox
+                  v-model="sharedWith"
+                  :items="[]"
+                  :search-input.sync="shareSearch"
+                  label="Shared with"
+                  outlined
+                  deletable-chips
+                  small-chips
+                  multiple
+                  persistent-hint
+                  hint="Type email addresses to share with."
+                  :rules="sharedWithRules"
+                >
+                  <template v-slot:no-data>
+                    <v-list-item dense v-if="emailIsValid(shareSearch)">
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          Press <kbd>enter</kbd> to share with "<strong>{{
+                            shareSearch
+                          }}</strong
+                          >"
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template></v-combobox
+                >
+              </v-col>
+            </v-row>
+          </v-container>
+          <input
+            v-show="false"
+            ref="imgUpload"
+            type="file"
+            @change="onImgUpload"
+          />
+        </v-card-text>
+        <v-spacer />
+        <v-card-actions
+          :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+        >
+          <v-btn
+            text
+            color="red darken-1"
+            @click="onDelete"
+            v-if="editing"
+            :disabled="saving"
+          >
+            Delete cookbook
+          </v-btn>
+          <v-spacer v-if="!$vuetify.breakpoint.xsOnly"></v-spacer>
+          <v-btn
+            v-if="!$vuetify.breakpoint.xsOnly"
+            color="blue darken-1"
+            text
+            :disabled="saving"
+            @click="$store.commit('closeCookbookDialog')"
+            >Close</v-btn
+          >
+          <v-btn
+            color="blue darken-1"
+            text
+            :disabled="saving || !valid"
+            @click="onSave"
+            v-if="!$vuetify.breakpoint.xsOnly"
+            >{{ editing ? "Save" : "Create" }}</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
@@ -146,18 +159,19 @@ export default Vue.extend({
     title: "",
     saving: false,
     uploadProgress: null as null | number,
-    sharedWith: ["jsmnbom@gmail.com"],
-    shareSearch: null as null | string
+    sharedWith: [] as string[],
+    shareSearch: null as null | string,
+    valid: false
   }),
   computed: {
     ...mapState(["cookbookDialogActive", "cookbookDialogKey"]),
     editing(): boolean {
       return this.cookbookDialogKey != null;
     },
-    sharedWithErrors() {
-      return this.shareSearch && !(this as any).emailIsValid(this.shareSearch)
-        ? ["Email is invalid."]
-        : "";
+    sharedWithRules(): Array<boolean | string> {
+      return this.sharedWith.map(
+        email => this.emailIsValid(email) || `${email} is not a valid email.`
+      );
     },
     cookbook(): CookbookValue | null {
       return this.cookbookDialogKey
@@ -173,9 +187,13 @@ export default Vue.extend({
       this.img = URL.createObjectURL(this.imgFile);
     },
     async onSave(): Promise<void> {
+      if (!(this.$refs.form as any).validate()) {
+        return;
+      }
+
       this.saving = true;
       if (!this.editing) {
-        await (this as any).onCreate();
+        await this.onCreate();
         return;
       }
       const newCookbook = CookbookValue.fromObject(this.cookbook!.toObject());
@@ -186,7 +204,11 @@ export default Vue.extend({
       }
       if (this.img !== this.cookbook!.thumbURL) {
         dirty = true;
-        newCookbook.thumbURL = await (this as any).handleImage();
+        newCookbook.thumbURL = await this.handleImage();
+      }
+      if (this.sharedWith !== this.cookbook!.sharedWith) {
+        dirty = true;
+        newCookbook.sharedWith = this.sharedWith;
       }
 
       if (dirty) {
@@ -194,15 +216,23 @@ export default Vue.extend({
           .doc(this.cookbookDialogKey)
           .update(newCookbook.toObject())
           .then(() => {
-            console.log("Cookbook updated!");
+            this.$dialog.message.info("Cookbook updated", {
+              position: "bottom"
+            });
             this.saving = false;
             this.$store.commit("closeCookbookDialog");
           })
           .catch(error => {
+            this.$dialog.message.error("Error updating cookbook", {
+              position: "bottom"
+            });
             console.error(`Error updating cookbook:`, error);
             this.saving = false;
             this.$store.commit("closeCookbookDialog");
           });
+      } else {
+        this.saving = false;
+        this.$store.commit("closeCookbookDialog");
       }
     },
     async handleImage(): Promise<string> {
@@ -210,6 +240,9 @@ export default Vue.extend({
         width: 500,
         height: 500
       }).catch(error => {
+        this.$dialog.message.error("Error uplading image", {
+          position: "bottom"
+        });
         console.error(`Error compressing image: `, error);
       });
       if (blob) {
@@ -218,6 +251,9 @@ export default Vue.extend({
           `images/cookbook/${uuid()}.${this.imgFile!.name.split(".").pop()}`,
           progress => (this.uploadProgress = progress)
         ).catch(error => {
+          this.$dialog.message.error("Error uplading image", {
+            position: "bottom"
+          });
           console.error(`Error uplading image:`, error);
         });
         this.uploadProgress = null;
@@ -234,7 +270,7 @@ export default Vue.extend({
         this.$store.state.userInfo!.displayName!,
         this.$store.state.userInfo!.uid,
         [],
-        this.img ? await (this as any).handleImage() : ""
+        this.img ? await this.handleImage() : ""
       );
 
       console.log("creating", cookbook);
@@ -242,9 +278,10 @@ export default Vue.extend({
       db.collection("cookbooks")
         .add(cookbook.toObject())
         .then(docRef => {
-          console.log(
-            `Successfully created new cookbook with id: ${docRef.id}`
-          );
+          this.$dialog.message.info("Created new cookbook", {
+            position: "bottom"
+          });
+          console.log(`Created new cookbook with id: ${docRef.id}`);
           this.saving = false;
           this.$store.commit("closeCookbookDialog");
           this.$router.push({
@@ -253,7 +290,9 @@ export default Vue.extend({
           });
         })
         .catch(error => {
-          console.log(error);
+          this.$dialog.message.error("Error creating cookbook", {
+            position: "bottom"
+          });
           this.$store.commit("closeCookbookDialog");
           this.saving = false;
           console.error(`Error creating cookbook:`, error);
@@ -269,7 +308,7 @@ export default Vue.extend({
             color: "red",
             text: "Yes I do",
             handle: () => {
-              return (this as any)._deleteCookbook(this.cookbookDialogKey);
+              return this._deleteCookbook(this.cookbookDialogKey);
             }
           }
         }
@@ -281,14 +320,20 @@ export default Vue.extend({
           .doc(this.cookbookDialogKey)
           .delete()
           .then(() => {
+            this.$dialog.message.info("Cookbook deleted", {
+              position: "bottom"
+            });
             console.log("Cookbook deleted!");
             this.$store.commit("closeCookbookDialog");
             resolve();
           })
           .catch(error => {
+            this.$dialog.message.error("Error deleting cookbook", {
+              position: "bottom"
+            });
             this.$store.commit("closeCookbookDialog");
             resolve();
-            console.error(`Error removing cookbook:`, error);
+            console.error(`Error deleting cookbook:`, error);
           });
       });
     },
@@ -296,17 +341,19 @@ export default Vue.extend({
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
   },
-  created(): void {
+  mounted(): void {
     this.$store.watch(
       state => state.cookbookDialogActive,
       () => {
-        if (this.$refs.title) (this.$refs.title as any).reset();
+        if (this.$refs.form) (this.$refs.form as any).reset();
         if (this.cookbook) {
           this.title = this.cookbook.title;
           this.img = this.cookbook.thumbURL;
+          this.sharedWith = this.cookbook.sharedWith;
         } else {
           this.title = "";
           this.img = "";
+          this.sharedWith = [];
         }
       }
     );
