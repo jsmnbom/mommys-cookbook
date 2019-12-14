@@ -24,6 +24,13 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-card :loading="saving">
+      <template slot="progress">
+        <v-progress-linear
+          :value="uploadProgress"
+          :indeterminate="uploadProgress == null"
+          color="deep-purple accent-4"
+        ></v-progress-linear>
+      </template>
       <v-card-text>
         <v-container>
           <v-row justify="center" align="center">
@@ -46,12 +53,39 @@
           <v-row align="center" justify="center">
             <v-col cols="12" md="8">
               <v-text-field
-                class="input-center"
-                solo
+                outlined
+                ref="title"
                 label="Cookbook title"
                 required
+                :rules="[() => !!title || 'This field is required']"
                 v-model="title"
               ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-combobox
+                v-model="sharedWith"
+                :items="[]"
+                :search-input.sync="shareSearch"
+                label="Shared with"
+                outlined
+                deletable-chips
+                small-chips
+                multiple
+                :error-messages="sharedWithErrors"
+              >
+                <template v-slot:no-data>
+                  <v-list-item dense v-if="emailIsValid(shareSearch)">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Press <kbd>enter</kbd> to share with "<strong>{{
+                          shareSearch
+                        }}</strong
+                        >"
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template></v-combobox
+              >
             </v-col>
           </v-row>
         </v-container>
@@ -98,7 +132,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState } from "vuex";
+import { v4 as uuid } from "uuid";
 
+import { compressImage, uploadFile } from "@/utils";
 import { db, CookbookValue } from "@/firebase";
 
 export default Vue.extend({
@@ -106,15 +142,24 @@ export default Vue.extend({
   data: () => ({
     imgFocus: false,
     img: "",
+    imgFile: null as null | File,
     title: "",
-    saving: false
+    saving: false,
+    uploadProgress: null as null | number,
+    sharedWith: ["jsmnbom@gmail.com"],
+    shareSearch: null as null | string
   }),
   computed: {
     ...mapState(["cookbookDialogActive", "cookbookDialogKey"]),
-    editing() {
+    editing(): boolean {
       return this.cookbookDialogKey != null;
     },
-    cookbook() {
+    sharedWithErrors() {
+      return this.shareSearch && !(this as any).emailIsValid(this.shareSearch)
+        ? ["Email is invalid."]
+        : "";
+    },
+    cookbook(): CookbookValue | null {
       return this.cookbookDialogKey
         ? this.$store.state.cookbooks[this.cookbookDialogKey]
         : null;
@@ -124,48 +169,72 @@ export default Vue.extend({
     onImgUpload(
       event: any /* https://github.com/microsoft/TypeScript/issues/31816 */
     ) {
-      this.img = URL.createObjectURL(event.target.files[0]);
+      this.imgFile = event.target.files[0];
+      this.img = URL.createObjectURL(this.imgFile);
     },
-    onSave() {
+    async onSave(): Promise<void> {
       this.saving = true;
       if (!this.editing) {
-        // @ts-ignore
-        this.onCreate();
+        await (this as any).onCreate();
         return;
       }
-      const newCookbook = CookbookValue.fromObject(
-        (this.cookbook as CookbookValue).toObject()
-      );
+      const newCookbook = CookbookValue.fromObject(this.cookbook!.toObject());
       let dirty = false;
-      if (this.title !== (this.cookbook as CookbookValue).title) {
+      if (this.title !== this.cookbook!.title) {
         dirty = true;
         newCookbook.title = this.title;
-      } 
+      }
+      if (this.img !== this.cookbook!.thumbURL) {
+        dirty = true;
+        newCookbook.thumbURL = await (this as any).handleImage();
+      }
 
       if (dirty) {
         db.collection("cookbooks")
           .doc(this.cookbookDialogKey)
           .update(newCookbook.toObject())
           .then(() => {
-            // notificationSuccess('Cookbook successfully updated!');
+            console.log("Cookbook updated!");
             this.saving = false;
             this.$store.commit("closeCookbookDialog");
           })
           .catch(error => {
-            // dialogAlert(`Error updating cookbook: ${error}`);
+            console.error(`Error updating cookbook:`, error);
             this.saving = false;
             this.$store.commit("closeCookbookDialog");
           });
       }
     },
-    onCreate() {
+    async handleImage(): Promise<string> {
+      const blob = await compressImage(this.imgFile!, {
+        width: 500,
+        height: 500
+      }).catch(error => {
+        console.error(`Error compressing image: `, error);
+      });
+      if (blob) {
+        const downloadURL = await uploadFile(
+          blob,
+          `images/cookbook/${uuid()}.${this.imgFile!.name.split(".").pop()}`,
+          progress => (this.uploadProgress = progress)
+        ).catch(error => {
+          console.error(`Error uplading image:`, error);
+        });
+        this.uploadProgress = null;
+        if (downloadURL) {
+          return downloadURL;
+        }
+      }
+      return "";
+    },
+    async onCreate() {
       const cookbook = new CookbookValue(
         this.title,
         "",
         this.$store.state.userInfo!.displayName!,
         this.$store.state.userInfo!.uid,
         [],
-        ""
+        this.img ? await (this as any).handleImage() : ""
       );
 
       console.log("creating", cookbook);
@@ -173,10 +242,9 @@ export default Vue.extend({
       db.collection("cookbooks")
         .add(cookbook.toObject())
         .then(docRef => {
-          //   notificationSuccess(
-          //     `Successfully created new cookbook with id: ${docRef.id}`
-          //   );
-          console.log(docRef);
+          console.log(
+            `Successfully created new cookbook with id: ${docRef.id}`
+          );
           this.saving = false;
           this.$store.commit("closeCookbookDialog");
           this.$router.push({
@@ -188,7 +256,7 @@ export default Vue.extend({
           console.log(error);
           this.$store.commit("closeCookbookDialog");
           this.saving = false;
-          //   dialogAlert(`Error creating cookbook: ${error}`);
+          console.error(`Error creating cookbook:`, error);
         });
     },
     async onDelete() {
@@ -201,8 +269,7 @@ export default Vue.extend({
             color: "red",
             text: "Yes I do",
             handle: () => {
-              // @ts-ignore
-              return this._deleteCookbook(this.cookbookDialogKey);
+              return (this as any)._deleteCookbook(this.cookbookDialogKey);
             }
           }
         }
@@ -214,25 +281,29 @@ export default Vue.extend({
           .doc(this.cookbookDialogKey)
           .delete()
           .then(() => {
-            // notificationSuccess('Cookbook successfully deleted!');
+            console.log("Cookbook deleted!");
             this.$store.commit("closeCookbookDialog");
             resolve();
           })
           .catch(error => {
             this.$store.commit("closeCookbookDialog");
             resolve();
-            // dialogAlert(`Error removing cookbook: ${error}`);
+            console.error(`Error removing cookbook:`, error);
           });
       });
+    },
+    emailIsValid(email: string): boolean {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
   },
-  created() {
+  created(): void {
     this.$store.watch(
       state => state.cookbookDialogActive,
       () => {
+        if (this.$refs.title) (this.$refs.title as any).reset();
         if (this.cookbook) {
-          this.title = (this.cookbook as CookbookValue).title;
-          this.img = (this.cookbook as CookbookValue).thumbURL;
+          this.title = this.cookbook.title;
+          this.img = this.cookbook.thumbURL;
         } else {
           this.title = "";
           this.img = "";
@@ -248,12 +319,5 @@ export default Vue.extend({
   position: absolute;
   bottom: 0;
   right: 0;
-}
-.input-center >>> .v-label {
-  width: 100%;
-  text-align: center;
-}
-.input-center >>> input {
-  text-align: center;
 }
 </style>
