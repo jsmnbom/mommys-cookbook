@@ -1,43 +1,67 @@
-import Vue from 'vue'
-import VueRouter, { Route } from 'vue-router'
-import Home from '@/views/Home.vue'
-import Cookbook from '@/views/Cookbook.vue'
-import Recipe from '@/views/Recipe.vue'
+import Vue from "vue"
+import VueRouter, { Route } from "vue-router"
+import Home from "@/views/Home.vue"
+import Cookbook from "@/views/Cookbook.vue"
+import Recipe from "@/views/Recipe.vue"
+
+import DefaultNavbar from "@/components/DefaultNavbar.vue";
+import CookbookNavbar from "@/components/cookbook/CookbookNavbar.vue";
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: Home
+    path: "/",
+    name: "home",
+    components: {
+      default: Home,
+      navbar: DefaultNavbar
+    }
   },
   {
-    path: '/cookbook/:cookbookId',
-    name: 'cookbook',
-    component: Cookbook,
-    props: true
+    path: "/cookbook/:cookbookId",
+    name: "cookbook",
+    components: {
+      default: Cookbook,
+      navbar: CookbookNavbar
+    },
+    props: {
+      default: true,
+      navbar: false
+    }
   },
   {
-    path: '/cookbook/:cookbookId/recipe/:recipeId',
-    name: 'recipe',
-    component: Recipe,
-    props: true
+    path: "/cookbook/:cookbookId/recipe/:recipeId",
+    name: "recipe",
+    components: {
+      default: Recipe,
+      navbar: DefaultNavbar
+    },
+    props: {
+      default: true,
+      navbar: false
+    }
   },
   {
-    path: '/cookbook/:cookbookId/recipe/:recipeId/ingredients',
-    name: 'recipe/ingredients',
-    component: Recipe,
-    meta: { transitionName: 'slide' },
-    props: (route: Route) => ({ ingredients: true, ...route.params })
+    path: "/cookbook/:cookbookId/recipe/:recipeId/ingredients",
+    name: "recipe/ingredients",
+    components: {
+      default: Recipe,
+      navbar: DefaultNavbar
+    },
+    meta: { transitionName: "slide" },
+    props: {
+      default: (route: Route) => ({ ingredients: true, ...route.params }),
+      navbar: false
+    }
   }
   // {
-  //   path: '/about',
-  //   name: 'about',
+  //   path: "/about",
+  //   name: "about",
   //   // route level code-splitting
   //   // this generates a separate chunk (about.[hash].js) for this route
   //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+  //   component: () => import(/* webpackChunkName: "about" */ "../views/About.vue")
   // }
 ]
 

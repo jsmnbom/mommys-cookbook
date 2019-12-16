@@ -131,7 +131,7 @@
       </v-container>
     </v-img>
     <v-card-text class="pa-0">
-      <Editor
+      <RecipeEditor
         :value="content"
         @input="$emit('update:content', $event)"
         v-if="editing"
@@ -157,13 +157,13 @@
 import Vue from "vue";
 import { mapState } from "vuex";
 
-import Editor from "@/components/Editor.vue";
+import RecipeEditor from "@/components/recipe/RecipeEditor.vue";
 import { randomImgSrc } from "@/utils";
 
 export default Vue.extend({
   name: "RecipeContent",
   components: {
-    Editor
+    RecipeEditor
   },
   props: [
     "title",

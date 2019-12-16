@@ -110,6 +110,7 @@ const AlignStyle = Quill.import("attributors/style/align");
 Quill.register(AlignStyle, true);
 
 export default Vue.extend({
+  name: "RecipeEditor",
   components: {
     VueEditor
   },

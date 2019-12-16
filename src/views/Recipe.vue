@@ -42,8 +42,8 @@ import { mapState } from "vuex";
 import { Route } from "vue-router";
 import { v4 as uuid } from "uuid";
 
-import RecipeIngredientsList from "@/components/RecipeIngredientsList.vue";
-import RecipeContent from "@/components/RecipeContent.vue";
+import RecipeIngredientsList from "@/components/recipe/RecipeIngredientsList.vue";
+import RecipeContent from "@/components/recipe/RecipeContent.vue";
 import { RecipeValue, RecipeList, db } from "@/firebase";
 import { compressImage, uploadFile } from "@/utils";
 

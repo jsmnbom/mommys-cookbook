@@ -1,88 +1,26 @@
 <template>
   <v-container>
-    <v-row>
-      <template v-for="(recipe, key) in recipes" ref="recipes">
-        <v-col cols="12" sm="6" :key="key">
-          <v-card
-            :color="getColor(key)[0]"
-            :dark="!getColor(key)[1]"
-            :light="getColor(key)[1]"
-            @click="toRecipe(key)"
-          >
-            <v-img-cross-origin
-              :aspect-ratio="16 / 9"
-              :src="recipeImgs[key]"
-              @load="imgLoad(key, $event)"
-              ref="img"
-              :gradient="
-                $vuetify.theme.dark
-                  ? 'to bottom, rgba(0,0,0,.2), rgba(0,0,0,.7)'
-                  : 'to bottom, rgba(0,0,0,.05), rgba(0,0,0,.4)'
-              "
-            >
-              <v-container fill-height class="align-end pa-0">
-                <v-col class="pa-0">
-                  <v-card-title class="white--text">
-                    <span
-                      :class="{
-                        'display-1': $vuetify.breakpoint.smAndUp,
-                        headline: $vuetify.breakpoint.xsOnly
-                      }"
-                      >{{ recipe.title || "(untitled recipe)" }}</span
-                    >
-                  </v-card-title>
-                  <v-card-subtitle class="white--text pl-5">
-                    <span v-text="recipe.subtitle" class="subtitle-1"></span>
-                  </v-card-subtitle>
-                </v-col>
-              </v-container>
-            </v-img-cross-origin>
-
-            <div class="d-flex flex-no-wrap justify-space-between">
-              <div></div>
-            </div>
-            <v-card-actions>
-              <v-btn text @mousedown.stop="toRecipe(key)">Open</v-btn>
-              <v-btn
-                text
-                :class="{
-                  'text--darken-3': getColor(key)[1],
-                  'text--lighten-1': !getColor(key)[1]
-                }"
-                color="error"
-                @mousedown.stop
-                @click.stop="deleteRecipe(key)"
-              >
-                Delete</v-btn
-              >
-              <v-divider />
-              <v-list-item class="flex-column align-end pr-1 justify-center">
-                <v-rating
-                  dense
-                  size="24"
-                  readonly
-                  color="red"
-                  background-color="red lighten-1"
-                  full-icon="mdi-heart"
-                  :length="recipe.ratingTastiness"
-                  :value="recipe.ratingTastiness"
-                ></v-rating>
-                <v-rating
-                  dense
-                  size="24"
-                  readonly
-                  color="green darken-1"
-                  background-color="green lighten-4"
-                  full-icon="mdi-currency-usd"
-                  :length="recipe.ratingCost"
-                  :value="recipe.ratingCost"
-                ></v-rating>
-              </v-list-item>
-            </v-card-actions>
-          </v-card>
-        </v-col>
+    <v-data-iterator
+      :items="items"
+      disable-pagination
+      hide-default-footer
+      :sort-by="cookbookSortBy"
+      :custom-sort="sort"
+      no-data-text="No recipes found in cookbook"
+    >
+      <template v-slot:default="props">
+        <v-row>
+          <template v-for="{ recipe, recipeId } in props.items">
+            <RecipeListItem
+              :key="recipeId"
+              :cookbookId="cookbookId"
+              :recipeId="recipeId"
+              :recipe="recipe"
+            />
+          </template>
+        </v-row>
       </template>
-    </v-row>
+    </v-data-iterator>
   </v-container>
 </template>
 
@@ -90,97 +28,84 @@
 import Vue from "vue";
 import { db, RecipeList, RecipeValue, QuerySnapshot } from "@/firebase";
 
-import { randomImgSrc } from "@/utils";
-import CrossOriginVImg from "@/components/CrossOriginVImg";
+import RecipeListItem from "@/components/cookbook/RecipeListItem.vue";
 
-import FastAverageColor from "fast-average-color";
 import { Route } from "vue-router";
+import { mapState } from "vuex";
 
-// @ts-ignore
-const fac = new FastAverageColor();
+type Items = { recipeId: string; recipe: RecipeValue }[];
 
 export default Vue.extend({
   name: "Cookbook",
   props: ["cookbookId"],
   components: {
-    CrossOriginVImg
+    RecipeListItem
   },
   data: () => ({
-    recipeColors: {} as { [key: string]: string }
+    items: [] as Items
   }),
   computed: {
-    recipes(): RecipeList {
-      return this.$store.state.recipes[this.cookbookId];
-    },
-    recipeImgs(): { [id: string]: string } {
-      return Object.fromEntries(
-        Object.entries(this.recipes).map(
-          ([key, recipe]: [string, RecipeValue]) => {
-            let src;
-            if (recipe.thumbURL) {
-              src = recipe.thumbURL;
-            } else {
-              src = randomImgSrc(key, 2);
-            }
-            return [key, src];
-          }
-        )
-      );
-    }
+    ...mapState(["recipes", "cookbookSortBy"])
   },
   methods: {
     fetchRecipes() {
       this.$store.dispatch("fetchRecipes", this.cookbookId);
     },
-    imgLoad(recipeId: string, img: HTMLImageElement) {
-      const result = fac.getColor(img);
-      Vue.set(this.recipeColors, recipeId, [result.hex, result.isLight]);
-    },
-    getColor(recipeId: string) {
-      return this.recipeColors[recipeId] || ["#fff", true];
-    },
-    toRecipe(recipeId: string) {
-      this.$router.push({
-        name: "recipe",
-        params: { cookbookId: this.cookbookId, recipeId }
+    setRecipes() {
+      this.items = Object.keys(this.recipes[this.cookbookId]).map(recipeId => {
+        return {
+          recipeId,
+          recipe: this.recipes[this.cookbookId][recipeId]
+        };
       });
     },
-    async deleteRecipe(recipeId: string) {
-      await this.$dialog.confirm({
-        text: `Do you really want to delete ${this.recipes[recipeId].title}?<br>This action cannot be undone.`,
-        title: "",
-        actions: {
-          false: "No",
-          true: {
-            color: "red",
-            text: "Yes I do",
-            handle: () => {
-              return this._deleteRecipe(recipeId);
-            }
+    setActionButton() {
+      this.$store.commit("setActionButton", {
+        icon: "mdi-plus",
+        action: "createRecipe"
+      });
+    },
+    sort(items: Items, sortBy: string[], sortDesc: boolean[]) {
+      console.log(items, sortBy, sortDesc);
+      items.sort((a, b) => {
+        if (sortBy[0] === "lastEdited") {
+          if (!sortDesc[0]) {
+            return (
+              (a.recipe.lastEdited ? a.recipe.lastEdited.getTime() : 0) -
+              (b.recipe.lastEdited ? b.recipe.lastEdited.getTime() : 0)
+            );
+          } else {
+            return (
+              (b.recipe.lastEdited ? b.recipe.lastEdited.getTime() : 0) -
+              (a.recipe.lastEdited ? a.recipe.lastEdited.getTime() : 0)
+            );
+          }
+          // @ts-ignore
+        } else if (sortBy[0] == "title") {
+          if (!sortDesc[0]) {
+            // @ts-ignore
+            return (a.recipe[sortBy[0]] as string).localeCompare(
+              // @ts-ignore
+              b.recipe[sortBy[0]] as string
+            );
+          } else {
+            // @ts-ignore
+            return (b.recipe[sortBy[0]] as string).localeCompare(
+              // @ts-ignore
+              a.recipe[sortBy[0]] as string
+            );
+          }
+        } else {
+          if (!sortDesc[0]) {
+            // @ts-ignore
+            return a.recipe[sortBy[0]] - b.recipe[sortBy[0]];
+          } else {
+            // @ts-ignore
+            return b.recipe[sortBy[0]] - a.recipe[sortBy[0]];
           }
         }
       });
-    },
-    async _deleteRecipe(recipeId: string) {
-      return new Promise(resolve => {
-        db.collection("recipes")
-          .doc(recipeId)
-          .delete()
-          .then(() => {
-            this.$dialog.message.info("Recipe deleted", {
-              position: "bottom"
-            });
-            console.log("Recipe deleted!");
-            resolve();
-          })
-          .catch(error => {
-            this.$dialog.message.error("Error deleting recipe", {
-              position: "bottom"
-            });
-            resolve();
-            console.error(`Error deleting recipe:`, error);
-          });
-      });
+      return items;
     }
   },
   watch: {
@@ -188,24 +113,33 @@ export default Vue.extend({
       if (to.name && to.name == "cookbook") {
         this.fetchRecipes();
         this.$store.commit("setCurrentCookbookId", this.cookbookId);
+        this.setActionButton();
       }
       if (from.name && from.name == "cookbook") {
         this.$store.commit("setCurrentCookbookId", null);
+        this.$store.commit("setActionButton", null);
       }
     }
   },
   created() {
     this.fetchRecipes();
     this.$store.commit("setCurrentCookbookId", this.cookbookId);
-  },
-  mounted() {
-    this.$store.commit("setActionButton", {
-      icon: "mdi-plus",
-      action: "createRecipe"
-    });
-  },
-  beforeDestroy() {
-    this.$store.commit("setActionButton", null);
+
+    if (
+      this.cookbookId in this.recipes &&
+      this.recipes[this.cookbookId].length > 0
+    ) {
+      this.setRecipes();
+    }
+
+    this.$store.watch(
+      state => state.recipes[this.cookbookId],
+      recipes => {
+        this.setRecipes();
+      }
+    );
+
+    this.setActionButton();
   }
 });
 </script>

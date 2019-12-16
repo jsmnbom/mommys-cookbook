@@ -8,6 +8,7 @@
       :show-select="!editing"
       item-key="key"
       no-data-text="No ingredients added"
+      disable-pagination
     >
       <template v-slot:header.ingredient="{ header }">
         <span v-text="header.text" class="subtitle-1"></span>

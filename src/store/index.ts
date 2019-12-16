@@ -20,7 +20,8 @@ interface State {
   cookbookDialogKey: string | null,
   currentCookbookId: string | null,
   editingRecipe: boolean,
-  darkTheme: boolean
+  darkTheme: boolean,
+  cookbookSortBy: string
 }
 
 const state: State = {
@@ -33,7 +34,8 @@ const state: State = {
   cookbookDialogKey: null,
   currentCookbookId: null,
   editingRecipe: false,
-  darkTheme: false
+  darkTheme: false,
+  cookbookSortBy: "lastEdited"
 };
 
 const vuexLocal = new VuexPersistence<State>({
@@ -70,8 +72,14 @@ const store = new Vuex.Store({
     clearRecipes(state, cookbookId) {
       Vue.set(state.recipes, cookbookId, {});
     },
-    setRecipes(state, { cookbookId, recipes }) {
-      Vue.set(state.recipes, cookbookId, recipes);
+    addOrModifyRecipe(state, { cookbookId, recipeId, recipe }) {
+      Vue.set(state.recipes, cookbookId, {
+        ...state.recipes[cookbookId],
+        [recipeId]: recipe
+      });
+    },
+    removeRecipe(state, { cookbookId, recipeId }) {
+      Vue.delete(state.recipes[cookbookId], recipeId);
     },
     setBottomNavActive(state, bottomNavActive) {
       state.bottomNavActive = bottomNavActive;
@@ -102,6 +110,9 @@ const store = new Vuex.Store({
     },
     toggleDarkTheme(state) {
       state.darkTheme = !state.darkTheme
+    },
+    setCookbookSortBy(state, cookbookSortBy) {
+      state.cookbookSortBy = cookbookSortBy;
     }
   },
   actions: {
@@ -109,14 +120,14 @@ const store = new Vuex.Store({
       console.log("fetchrecipes", cookbookId);
       commit("clearRecipes", cookbookId);
       const inner = (querySnapshot: QuerySnapshot) => {
-        commit("setRecipes", {
-          cookbookId,
-          recipes: querySnapshot.docs.reduce((map: RecipeList, doc) => {
-            const data = doc.data();
-            const cookbook = RecipeValue.fromObject(data);
-            map[doc.id] = cookbook;
-            return map;
-          }, {})
+        querySnapshot.docChanges().forEach(function(change) {
+          if (change.type === "added" || change.type === "modified") {
+            const data = change.doc.data();
+            const recipe = RecipeValue.fromObject(data);
+            commit("addOrModifyRecipe", { cookbookId, recipeId: change.doc.id, recipe });
+          } else if (change.type === "removed") {
+            commit("removeRecipe", change.doc.id);
+          }
         });
       };
       db.collection("recipes")
@@ -130,8 +141,7 @@ const store = new Vuex.Store({
             const data = change.doc.data();
             const cookbook = CookbookValue.fromObject(data);
             commit("addOrModifyCookbook", { cookbookId: change.doc.id, cookbook });
-          }
-          if (change.type === "removed") {
+          } else if (change.type === "removed") {
             commit("removeCookbook", change.doc.id);
           }
         });

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Navbar />
+    <router-view name="navbar"> </router-view>
     <CookbooksDrawer v-if="!loading && loggedIn" />
     <BottomNavigation v-if="!loading && loggedIn" />
     <v-content>
@@ -24,7 +24,6 @@
 <script lang="ts">
 import Vue from "vue";
 import CookbooksDrawer from "./components/CookbooksDrawer.vue";
-import Navbar from "./components/Navbar.vue";
 import LoadingState from "./components/LoadingState.vue";
 import MissingLoginState from "./components/MissingLoginState.vue";
 import BottomNavigation from "./components/BottomNavigation.vue";
@@ -83,7 +82,6 @@ export default Vue.extend({
   },
   components: {
     CookbooksDrawer,
-    Navbar,
     LoadingState,
     MissingLoginState,
     BottomNavigation,
