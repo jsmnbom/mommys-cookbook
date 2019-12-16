@@ -65,12 +65,11 @@
           <v-col v-else cols="12" sm="6" class="py-0 order-2 order-sm-0">
             <v-card-title class="white--text pl-0 mb-2">
               <span
-                v-text="title"
                 :class="{
                   'display-1': $vuetify.breakpoint.smAndUp,
                   headline: $vuetify.breakpoint.xsOnly
                 }"
-              ></span>
+              >{{ title || "(untitled recipe)" }}</span>
             </v-card-title>
             <v-card-subtitle class="white--text pl-1">
               <span v-text="subtitle" class="subtitle-1"></span>
@@ -131,16 +130,23 @@
         </v-row>
       </v-container>
     </v-img>
-    <v-card-text>
-      <v-container>
-        <!-- <div
-            :class="{
-              recipeContent: true,
-              'black--text': !$vuetify.theme.dark,
-              'white--text': $vuetify.theme.dark
-            }"
-            v-html="value.content"
-          /> -->
+    <v-card-text class="pa-0">
+      <Editor
+        :value="content"
+        @input="$emit('update:content', $event)"
+        v-if="editing"
+      />
+      <v-container v-else>
+        <div
+          :class="{
+            'body-1': true,
+            'pa-4': true,
+            recipeContent: true,
+            'black--text': !$vuetify.theme.dark,
+            'white--text': $vuetify.theme.dark
+          }"
+          v-html="content"
+        />
       </v-container>
     </v-card-text>
     <input v-show="false" ref="imgUpload" type="file" @change="onImgUpload" />
@@ -151,10 +157,14 @@
 import Vue from "vue";
 import { mapState } from "vuex";
 
+import Editor from "@/components/Editor.vue";
 import { randomImgSrc } from "@/utils";
 
 export default Vue.extend({
   name: "RecipeContent",
+  components: {
+    Editor
+  },
   props: [
     "title",
     "subtitle",
@@ -162,6 +172,7 @@ export default Vue.extend({
     "ratingCost",
     "recipeId",
     "thumbURL",
+    "content",
     "saving"
   ],
   data: () => ({
@@ -205,5 +216,14 @@ export default Vue.extend({
 }
 .recipeContent >>> img {
   max-width: 100%;
+}
+</style>
+
+<style>
+.theme--light .recipeContent {
+  color: black;
+}
+.theme--dark .recipeContent {
+  color: white;
 }
 </style>

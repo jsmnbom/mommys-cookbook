@@ -37,9 +37,9 @@ const DEFAULT_TRANSITION = "fade";
 export default Vue.extend({
   name: "App",
   computed: {
-    ...mapState(["loggedIn"]),
+    ...mapState("account", ["loggedIn"]),
     loading() {
-      return !this.$store.state.authLoaded;
+      return !this.$store.state.account.loaded;
     },
     routerKey() {
       let key = "";
@@ -71,6 +71,15 @@ export default Vue.extend({
 
       next();
     });
+    this.$store.watch(
+      state => state.darkTheme,
+      darkTheme => {
+        this.$vuetify.theme.dark = darkTheme;
+      },
+      {
+        immediate: true
+      }
+    );
   },
   components: {
     CookbooksDrawer,

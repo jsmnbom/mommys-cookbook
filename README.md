@@ -37,10 +37,12 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ## Todo
 
 - Cookbook/recipe not found
-- Editing of recipes
-- Saving of dark mode
 - Sorting and fitlering of recipes
 - Icon
 - Tooltips
 - Add skeleton loaders
 - Drag and drop to sort ingredients
+- Multiplication of recipes/ingredients
+- Warning when leaving with unsaved changes
+- Maybe use vue-compositions functions and proper vuex modules
+- Don't allow recipe saving if not valid

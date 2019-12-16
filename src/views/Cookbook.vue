@@ -3,11 +3,16 @@
     <v-row>
       <template v-for="(recipe, key) in recipes" ref="recipes">
         <v-col cols="12" sm="6" :key="key">
-          <v-card color="#952175" dark @click="toRecipe(key)">
-            <v-img
+          <v-card
+            :color="getColor(key)[0]"
+            :dark="!getColor(key)[1]"
+            :light="getColor(key)[1]"
+            @click="toRecipe(key)"
+          >
+            <v-img-cross-origin
               :aspect-ratio="16 / 9"
-              :src="recipeImgs[key].src"
-              @load="imgLoad(recipeImgs[key])"
+              :src="recipeImgs[key]"
+              @load="imgLoad(key, $event)"
               ref="img"
               :gradient="
                 $vuetify.theme.dark
@@ -19,19 +24,19 @@
                 <v-col class="pa-0">
                   <v-card-title class="white--text">
                     <span
-                      v-text="recipe.title"
                       :class="{
                         'display-1': $vuetify.breakpoint.smAndUp,
                         headline: $vuetify.breakpoint.xsOnly
                       }"
-                    ></span>
+                      >{{ recipe.title || "(untitled recipe)" }}</span
+                    >
                   </v-card-title>
                   <v-card-subtitle class="white--text pl-5">
                     <span v-text="recipe.subtitle" class="subtitle-1"></span>
                   </v-card-subtitle>
                 </v-col>
               </v-container>
-            </v-img>
+            </v-img-cross-origin>
 
             <div class="d-flex flex-no-wrap justify-space-between">
               <div></div>
@@ -40,7 +45,11 @@
               <v-btn text @mousedown.stop="toRecipe(key)">Open</v-btn>
               <v-btn
                 text
-                class="red--text"
+                :class="{
+                  'text--darken-3': getColor(key)[1],
+                  'text--lighten-1': !getColor(key)[1]
+                }"
+                color="error"
                 @mousedown.stop
                 @click.stop="deleteRecipe(key)"
               >
@@ -82,6 +91,7 @@ import Vue from "vue";
 import { db, RecipeList, RecipeValue, QuerySnapshot } from "@/firebase";
 
 import { randomImgSrc } from "@/utils";
+import CrossOriginVImg from "@/components/CrossOriginVImg";
 
 import FastAverageColor from "fast-average-color";
 import { Route } from "vue-router";
@@ -92,21 +102,27 @@ const fac = new FastAverageColor();
 export default Vue.extend({
   name: "Cookbook",
   props: ["cookbookId"],
+  components: {
+    CrossOriginVImg
+  },
+  data: () => ({
+    recipeColors: {} as { [key: string]: string }
+  }),
   computed: {
     recipes(): RecipeList {
       return this.$store.state.recipes[this.cookbookId];
     },
-    recipeImgs(): { [id: string]: HTMLImageElement } {
+    recipeImgs(): { [id: string]: string } {
       return Object.fromEntries(
         Object.entries(this.recipes).map(
           ([key, recipe]: [string, RecipeValue]) => {
-            const img = document.createElement("img");
+            let src;
             if (recipe.thumbURL) {
-              img.src = recipe.thumbURL;
+              src = recipe.thumbURL;
             } else {
-              img.src = randomImgSrc(key, 2);
+              src = randomImgSrc(key, 2);
             }
-            return [key, img];
+            return [key, src];
           }
         )
       );
@@ -116,18 +132,18 @@ export default Vue.extend({
     fetchRecipes() {
       this.$store.dispatch("fetchRecipes", this.cookbookId);
     },
-    imgLoad(img: HTMLImageElement) {
-      //console.log(img.naturalHeight, img.naturalWidth)
-      //console.log(fac.getColor(img));
+    imgLoad(recipeId: string, img: HTMLImageElement) {
+      const result = fac.getColor(img);
+      Vue.set(this.recipeColors, recipeId, [result.hex, result.isLight]);
+    },
+    getColor(recipeId: string) {
+      return this.recipeColors[recipeId] || ["#fff", true];
     },
     toRecipe(recipeId: string) {
       this.$router.push({
         name: "recipe",
         params: { cookbookId: this.cookbookId, recipeId }
       });
-    },
-    createNew() {
-      console.log("create");
     },
     async deleteRecipe(recipeId: string) {
       await this.$dialog.confirm({

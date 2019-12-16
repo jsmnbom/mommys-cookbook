@@ -16,7 +16,7 @@
       <v-icon>mdi-github-circle</v-icon>
     </v-btn>
 
-    <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+    <v-btn icon @click="toggleDarkTheme">
       <v-icon>mdi-brightness-4</v-icon>
     </v-btn>
 
@@ -24,7 +24,7 @@
       <template v-slot:activator="{ on }">
         <v-btn text icon v-on="on" class="ml-2">
           <v-avatar size="40">
-            <img :src="userPhotoURL" alt="Avatar" />
+            <img :src="userInfo.photoURL" alt="Avatar" />
           </v-avatar>
         </v-btn>
       </template>
@@ -32,12 +32,12 @@
       <v-list>
         <v-list-item>
           <v-list-item-avatar>
-            <v-img :src="userPhotoURL"></v-img>
+            <v-img :src="userInfo.photoURL"></v-img>
           </v-list-item-avatar>
           <div>
             <v-list-item-subtitle>Logged in as</v-list-item-subtitle>
             <v-list-item-title class="subtitle-1">{{
-              userDisplayName
+              userInfo.displayName
             }}</v-list-item-title>
           </div>
         </v-list-item>
@@ -60,11 +60,11 @@ export default Vue.extend({
   name: "Navbar",
   methods: {
     ...mapMutations(["toggleDrawer"]),
-    ...mapActions(["login", "logout"])
+    ...mapActions("account", ["login", "logout"]),
+    ...mapMutations(["toggleDarkTheme"])
   },
   computed: {
-    ...mapGetters(["userPhotoURL", "userDisplayName"]),
-    ...mapState(["loggedIn"])
+    ...mapState("account", ["loggedIn", "userInfo"])
   }
 });
 </script>

@@ -1,16 +1,16 @@
 import Vue from "vue"
-import Vuex from "vuex"
+import Vuex, { Payload, Store } from 'vuex'
 import router from "@/router"
 import { firebase, auth, UserInfo, CookbookValue, CookbookList, RecipeList, QuerySnapshot, RecipeValue, db } from "@/firebase"
+import VuexPersistence from 'vuex-persist'
+
+import account from './modules/account';
 
 Vue.use(Vuex)
 
 type ActionButton = { icon: string, action?: string, mutation?: string }
 
-const state: {
-  userInfo: UserInfo | null,
-  loggedIn: boolean,
-  authLoaded: boolean,
+interface State {
   showDrawer: boolean,
   cookbooks: CookbookList,
   recipes: { [id: string]: RecipeList },
@@ -19,11 +19,11 @@ const state: {
   cookbookDialogActive: boolean,
   cookbookDialogKey: string | null,
   currentCookbookId: string | null,
-  editingRecipe: boolean
-} = {
-  userInfo: null,
-  loggedIn: false,
-  authLoaded: false,
+  editingRecipe: boolean,
+  darkTheme: boolean
+}
+
+const state: State = {
   showDrawer: false,
   cookbooks: {},
   recipes: {},
@@ -32,23 +32,23 @@ const state: {
   cookbookDialogActive: false,
   cookbookDialogKey: null,
   currentCookbookId: null,
-  editingRecipe: false
+  editingRecipe: false,
+  darkTheme: false
 };
+
+const vuexLocal = new VuexPersistence<State>({
+  storage: window.localStorage,
+  reducer: (state) => ({ darkTheme: state.darkTheme }),
+  filter: (mutation) => mutation.type == 'toggleDarkTheme'
+})
 
 const store = new Vuex.Store({
   state: state,
+  modules: {
+    account
+  },
+  plugins: [vuexLocal.plugin],
   mutations: {
-    storeUser(state, userInfo: UserInfo) {
-      state.userInfo = userInfo;
-      state.loggedIn = true;
-    },
-    logoutUser(state) {
-      state.userInfo = null;
-      state.loggedIn = false;
-    },
-    doneLoadingAuth(state) {
-      state.authLoaded = true;
-    },
     toggleDrawer(state) {
       state.showDrawer = !state.showDrawer;
     },
@@ -99,30 +99,12 @@ const store = new Vuex.Store({
     },
     setCurrentCookbookId(state, currentCookbookId) {
       state.currentCookbookId = currentCookbookId;
+    },
+    toggleDarkTheme(state) {
+      state.darkTheme = !state.darkTheme
     }
   },
   actions: {
-    login({ commit }) {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then((result: any) => {
-        commit("storeUser", result.user!)
-      }).catch((error: any) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = error.credential;
-        commit("logoutUser")
-      });
-    },
-    logout({ commit }) {
-      // @ts-ignore
-      auth.signOut().then(() => {
-        commit("logoutUser")
-      }).catch((error: any) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-    },
     fetchRecipes({ commit }, cookbookId) {
       console.log("fetchrecipes", cookbookId);
       commit("clearRecipes", cookbookId);
@@ -155,10 +137,10 @@ const store = new Vuex.Store({
         });
       };
       db.collection("cookbooks")
-        .where("authorUid", "==", this.state.userInfo!.uid)
+        .where("authorUid", "==", this.state.account.userInfo!.uid)
         .onSnapshot(inner);
       db.collection("cookbooks")
-        .where("sharedWith", "array-contains", this.state.userInfo!.email)
+        .where("sharedWith", "array-contains", this.state.account.userInfo!.email)
         .onSnapshot(inner);
     },
     createRecipe({ commit, state }) {
@@ -190,25 +172,17 @@ const store = new Vuex.Store({
         console.error("No current cookbook id!")
       }
     }
-  },
-  getters: {
-    userPhotoURL: state => {
-      return state.loggedIn ? state.userInfo!.photoURL : null
-    },
-    userDisplayName: (state) => {
-      return state.loggedIn ? state.userInfo!.displayName : "DisplayName"
-    }
   }
 });
 
 // @ts-ignore
 auth.onAuthStateChanged((user: UserInfo | null) => {
   if (user) {
-    store.commit("storeUser", user)
+    store.commit("account/store", user)
   } else {
-    store.commit("logoutUser")
+    store.commit("account/clear")
   }
-  store.commit("doneLoadingAuth")
+  store.commit("account/doneLoading")
 });
 
 export default store;

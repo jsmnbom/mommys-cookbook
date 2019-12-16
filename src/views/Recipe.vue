@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation v-model="valid">
+  <v-form ref="form" lazy-validation v-model="valid" v-if="recipe">
     <v-container v-if="editedRecipe">
       <RecipeIngredientsList
         v-if="hasBottomNav && ingredients"
@@ -101,17 +101,13 @@ export default Vue.extend({
             editedRecipeObject.thumbURL = await this.handleImage();
           }
 
-          console.log(this.addIngredientsText);
           if (this.addIngredientsText) {
-            console.log(editedRecipeObject.ingredients);
-            console.log(this.addIngredientsText.split(/\r?\n/));
             editedRecipeObject.ingredients = [
               ...editedRecipeObject.ingredients,
               ...this.addIngredientsText
                 .split(/\r?\n/)
                 .map(ingredient => ingredient.trim())
             ];
-            console.log(editedRecipeObject.ingredients);
           }
 
           if (editedRecipeObject !== this.recipe!.toObject()) {
@@ -144,7 +140,7 @@ export default Vue.extend({
     },
     recipe() {
       if (this.recipe) {
-        (this.$refs.form as any).reset();
+        if (this.$refs.form) (this.$refs.form as any).reset();
         this.imgFile = null;
         this.addIngredientsText = "";
         this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());

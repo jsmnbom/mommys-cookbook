@@ -1,24 +1,30 @@
 <template>
-  <v-card :loading="saving">
+  <v-card :loading="saving" class="card">
     <v-data-table
+      v-model="selectedItems"
       :items="items"
       :headers="headers"
       hide-default-footer
-      show-select
+      :show-select="!editing"
+      item-key="key"
       no-data-text="No ingredients added"
     >
       <template v-slot:header.ingredient="{ header }">
         <span v-text="header.text" class="subtitle-1"></span>
       </template>
-      <template v-slot:item.ingredient="{ item }" v-if="editing">
-        <v-edit-dialog>
-          {{ item.ingredient }}
+      <template v-slot:item.ingredient="props" v-if="editing">
+        <v-edit-dialog
+          @open="editIngredient = props.item.ingredient"
+          @cancel="cancelEdit(props.item)"
+          @save="saveIngredient(props.item)"
+        >
+          {{ props.item.ingredient }}
           <template v-slot:input>
             <v-text-field
-              :value="item.ingredient"
-              @input="editIngredient(ingredient, $event)"
+              v-model="editIngredient"
               label="Edit"
               single-line
+              autofocus
             ></v-text-field>
           </template>
         </v-edit-dialog>
@@ -64,29 +70,37 @@ export default Vue.extend({
         sortable: false
       },
       { text: "", value: "action", sortable: false, align: "right" }
-    ]
+    ],
+    currentEditIngredient: null as any,
+    editIngredient: "",
+    selectedItems: []
   }),
   computed: {
     ...mapState({
       editing: "editingRecipe"
     }),
     items() {
-      return this.ingredients.map((ingredient: string) => {
+      return this.ingredients.map((ingredient: string, index: number) => {
         return {
+          key: index,
           ingredient: ingredient
         };
       });
     }
   },
   methods: {
-    editIngredient(item: { ingredient: string }, newValue: string) {
-      // This is probably horribly inefficient
-      const index = this.ingredients.indexOf(item.ingredient);
-      if (index !== -1) {
-        const arr = [...this.ingredients];
-        arr[index] = newValue;
-        this.$emit("update:ingredients", arr);
-      }
+    saveIngredient({ ingredient }: { ingredient: string }) {
+      setTimeout(() => {
+        console.log(ingredient, this.editIngredient);
+        // This is probably horribly inefficient
+        const index = this.ingredients.indexOf(ingredient);
+        if (index !== -1) {
+          const arr = [...this.ingredients];
+          arr[index] = this.editIngredient;
+          this.$emit("update:ingredients", arr);
+        }
+        this.selectedItems = [];
+      });
     },
     deleteItem(item: { ingredient: string }) {
       // This is probably horribly inefficient
@@ -95,7 +109,11 @@ export default Vue.extend({
         const arr = [...this.ingredients];
         arr.splice(index, 1);
         this.$emit("update:ingredients", arr);
+        this.selectedItems = [];
       }
+    },
+    cancelEdit({ ingredient }: { ingredient: string }) {
+      this.editIngredient = ingredient;
     }
   }
 });

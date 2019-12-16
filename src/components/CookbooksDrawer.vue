@@ -24,7 +24,7 @@
         >
           <v-list-item-content>
             <v-list-item-title>
-              {{ item.recipe.title }}
+              {{ item.recipe.title || "(untitled recipe)" }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -141,7 +141,7 @@ export default Vue.extend({
   },
   created() {
     this.$store.watch(
-      state => state.loggedIn,
+      state => state.account.loggedIn,
       loggedIn => {
         if (loggedIn) {
           // @ts-ignore
@@ -149,7 +149,7 @@ export default Vue.extend({
         }
       }
     );
-    if (this.$store.state.loggedIn) {
+    if (this.$store.state.account.loggedIn) {
       // @ts-ignore
       this.fetchCookbooks();
     }
