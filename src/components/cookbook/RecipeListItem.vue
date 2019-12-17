@@ -16,15 +16,35 @@
           fill-height
           class="align-content-space-between justify-center"
         >
-          <v-row justify="start">
-            <template v-for="tag in recipe.tags">
-              <v-chip
-                class="ma-2"
-                color="#616161AA"
-                v-text="tag"
-                :key="tag"
-              ></v-chip>
-            </template>
+          <v-row justify="space-between">
+            <v-col cols="auto" class="pa-0">
+              <template v-for="tag in recipe.tags">
+                <v-chip
+                  class="ma-2"
+                  color="#616161AA"
+                  v-text="tag"
+                  :key="tag"
+                ></v-chip>
+              </template>
+            </v-col>
+            <v-spacer />
+            <v-col cols="auto" class="pa-0">
+              <v-menu :close-on-click="closeOnClick" offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click.stop="on" @mousedown.stop>
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item @click="deleteRecipe">
+                    <v-list-item-icon>
+                      <v-icon>mdi-delete</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>Delete recipe</v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-col>
           </v-row>
           <v-row
             align="end"
