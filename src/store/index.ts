@@ -21,7 +21,10 @@ interface State {
   currentCookbookId: string | null
   editingRecipe: boolean
   darkTheme: boolean
-  cookbookSortBy: string
+  cookbookSortBy: string,
+  cookbookSortByDesc: boolean,
+  cookbookTagFilters: string[],
+  cookbookTagFiltersAnd: boolean
 }
 
 const state: State = {
@@ -35,7 +38,10 @@ const state: State = {
   currentCookbookId: null,
   editingRecipe: false,
   darkTheme: false,
-  cookbookSortBy: "lastEdited"
+  cookbookSortBy: "lastEdited",
+  cookbookSortByDesc: false,
+  cookbookTagFilters: [],
+  cookbookTagFiltersAnd: false
 };
 
 
@@ -114,6 +120,20 @@ const store = new Vuex.Store({
     },
     setCookbookSortBy(state, cookbookSortBy) {
       state.cookbookSortBy = cookbookSortBy;
+    },
+    setCookbookSortByDesc(state, cookbookSortByDesc) {
+      state.cookbookSortByDesc = cookbookSortByDesc;
+    },
+    setCookbookTagFilters(state, cookbookTagFilters) {
+      state.cookbookTagFilters = cookbookTagFilters;
+    },
+    setCookbookTagFiltersAnd(state, cookbookTagFiltersAnd) {
+      state.cookbookTagFiltersAnd = cookbookTagFiltersAnd;
+    }
+  },
+  getters: {
+    cookbookTags: state => (cookbookId: string): string[] => {
+      return cookbookId in state.recipes ? Object.values(state.recipes[cookbookId]).map((recipe: any) => recipe.tags).flat() : []
     }
   },
   actions: {

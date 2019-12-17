@@ -5,7 +5,9 @@
       disable-pagination
       hide-default-footer
       :sort-by="cookbookSortBy"
+      :sort-desc="cookbookSortByDesc"
       :custom-sort="sort"
+      :custom-filter="filter"
       no-data-text="No recipes found in cookbook"
     >
       <template v-slot:default="props">
@@ -35,6 +37,18 @@ import { mapState } from "vuex";
 
 type Items = { recipeId: string; recipe: RecipeValue }[];
 
+function stringFilter(value: any, search: string | null) {
+  return (
+    value != null &&
+    search != null &&
+    typeof value !== "boolean" &&
+    value
+      .toString()
+      .toLocaleLowerCase()
+      .indexOf(search) !== -1
+  );
+}
+
 export default Vue.extend({
   name: "Cookbook",
   props: ["cookbookId"],
@@ -45,7 +59,13 @@ export default Vue.extend({
     items: [] as Items
   }),
   computed: {
-    ...mapState(["recipes", "cookbookSortBy"])
+    ...mapState([
+      "recipes",
+      "cookbookSortBy",
+      "cookbookSortByDesc",
+      "cookbookTagFilters",
+      "cookbookTagFiltersAnd"
+    ])
   },
   methods: {
     fetchRecipes() {
@@ -105,6 +125,32 @@ export default Vue.extend({
           }
         }
       });
+      return items;
+    },
+    filter(items: Items, search: string | null) {
+      if (this.cookbookTagFilters.length > 0) {
+        items = items.filter(({ recipe }) => {
+          if (this.cookbookTagFiltersAnd) {
+            return this.cookbookTagFilters.every((tag: string) =>
+              recipe.tags.includes(tag)
+            );
+          } else {
+            return this.cookbookTagFilters.some((tag: string) =>
+              recipe.tags.includes(tag)
+            );
+          }
+        });
+      }
+
+      if (search) {
+        search = search.toString().toLocaleLowerCase();
+        items = items.filter(({ recipe }) => {
+          return [recipe.title, recipe.subtitle].some(value => {
+            return stringFilter(value, search);
+          });
+        });
+      }
+
       return items;
     }
   },

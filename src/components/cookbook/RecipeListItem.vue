@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" sm="6" ref="recipe">
-    <v-card :color="color" :dark="isDark" :light="!isDark" @click="toRecipe">
+    <v-card dark @click="toRecipe">
       <v-img-cross-origin
         :aspect-ratio="16 / 9"
         :src="img"
@@ -12,65 +12,75 @@
             : 'to bottom, rgba(0,0,0,.05), rgba(0,0,0,.4)'
         "
       >
-        <v-container fill-height class="align-end pa-0">
-          <v-col class="pa-0">
-            <v-card-title class="white--text">
-              <span
-                :class="{
-                  'display-1': $vuetify.breakpoint.smAndUp,
-                  headline: $vuetify.breakpoint.xsOnly
-                }"
-                >{{ recipe.title || "(untitled recipe)" }}</span
-              >
-            </v-card-title>
-            <v-card-subtitle class="white--text pl-5">
-              <span v-text="recipe.subtitle" class="subtitle-1"></span>
-            </v-card-subtitle>
-          </v-col>
+        <v-container
+          fill-height
+          class="align-content-space-between justify-center"
+        >
+          <v-row justify="start">
+            <template v-for="tag in recipe.tags">
+              <v-chip
+                class="ma-2"
+                color="#616161AA"
+                v-text="tag"
+                :key="tag"
+              ></v-chip>
+            </template>
+          </v-row>
+          <v-row
+            align="end"
+            :class="{
+              'justify-space-between': !$vuetify.breakpoint.xsOnly,
+              'justify-center': $vuetify.breakpoint.xsOnly
+            }"
+          >
+            <v-col class="pa-0">
+              <v-card-title>
+                <span
+                  :class="{
+                    'display-1': $vuetify.breakpoint.mdAndUp,
+                    headline: $vuetify.breakpoint.smAndDown
+                  }"
+                  >{{ recipe.title || "(untitled recipe)" }}</span
+                >
+              </v-card-title>
+              <v-card-subtitle class="pl-5">
+                <span v-text="recipe.subtitle" class="subtitle-1"></span>
+              </v-card-subtitle>
+            </v-col>
+            <v-card-actions>
+              <v-row align="end" class="flex-column">
+                <v-rating
+                  class="elevated-rating"
+                  :size="$vuetify.breakpoint.lgAndUp ? 32 : 24"
+                  dense
+                  readonly
+                  color="red"
+                  background-color="red lighten-1"
+                  full-icon="mdi-heart"
+                  :length="recipe.ratingTastiness"
+                  :value="recipe.ratingTastiness"
+                >
+                </v-rating>
+                <v-rating
+                  class="elevated-rating"
+                  :size="$vuetify.breakpoint.lgAndUp ? 32 : 24"
+                  dense
+                  readonly
+                  color="green darken-1"
+                  background-color="green lighten-4"
+                  full-icon="mdi-currency-usd"
+                  :length="recipe.ratingCost"
+                  :value="recipe.ratingCost"
+                ></v-rating>
+              </v-row>
+            </v-card-actions>
+          </v-row>
         </v-container>
       </v-img-cross-origin>
 
       <div class="d-flex flex-no-wrap justify-space-between">
         <div></div>
       </div>
-      <v-card-actions>
-        <v-btn text @mousedown.stop="toRecipe">Open</v-btn>
-        <v-btn
-          text
-          :class="{
-            'text--darken-3': isDark,
-            'text--lighten-1': !isDark
-          }"
-          color="error"
-          @mousedown.stop
-          @click.stop="deleteRecipe"
-        >
-          Delete</v-btn
-        >
-        <v-divider />
-        <v-list-item class="flex-column align-end pr-1 justify-center">
-          <v-rating
-            dense
-            size="24"
-            readonly
-            color="red"
-            background-color="red lighten-1"
-            full-icon="mdi-heart"
-            :length="recipe.ratingTastiness"
-            :value="recipe.ratingTastiness"
-          ></v-rating>
-          <v-rating
-            dense
-            size="24"
-            readonly
-            color="green darken-1"
-            background-color="green lighten-4"
-            full-icon="mdi-currency-usd"
-            :length="recipe.ratingCost"
-            :value="recipe.ratingCost"
-          ></v-rating>
-        </v-list-item>
-      </v-card-actions>
     </v-card>
   </v-col>
 </template>
@@ -158,3 +168,10 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style scoped>
+.elevated-rating .v-icon {
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12) !important;
+}
+</style>

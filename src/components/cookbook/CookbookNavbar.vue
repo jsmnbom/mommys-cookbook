@@ -23,12 +23,26 @@
         flat
         solo-inverted
         hide-details
-        :items="tags"
+        :items="tagItems"
+        clearable
         multiple
-        prepend-inner-icon="mdi-tag-outline"
         label="Filter tags"
         class="flex-basis-20"
-      ></v-select>
+        v-model="tags"
+      >
+        <template v-slot:prepend-inner class="ma-0">
+          <v-icon>mdi-tag-outline</v-icon>
+          <v-btn
+            icon
+            small
+            @click.stop="toggleTagFiltersAnd"
+            @mouseup.stop
+            v-if="tags.length > 1"
+          >
+            <span>{{ tagFiltersAnd ? "AND" : "OR" }}</span>
+          </v-btn>
+        </template>
+      </v-select>
       <v-spacer />
       <v-select
         v-model="sortBy"
@@ -37,13 +51,14 @@
         solo-inverted
         hide-details
         :items="sortByItems"
-        prepend-inner-icon="mdi-sort"
         label="Sort by"
-        class="sort-by flex-basis-20"
+        class="flex-basis-20 tags"
       >
-        <template v-slot:append-outer class="ma-0">
-          <v-btn icon>
-            <v-icon>mdi-sort-ascending</v-icon>
+        <template v-slot:prepend-inner class="ma-0">
+          <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
+            <v-icon>{{
+              sortByDesc ? "mdi-sort-descending" : "mdi-sort-ascending"
+            }}</v-icon>
           </v-btn>
         </template>
       </v-select>
@@ -70,17 +85,31 @@
     <template v-slot:extension v-if="extensionFilter || extensionSort">
       <v-select
         v-if="extensionFilter"
+        v-model="tags"
         dense
         flat
         solo-inverted
         small
+        clearable
         hide-details
-        :items="tags"
+        :items="tagItems"
         multiple
-        prepend-inner-icon="mdi-tag-outline"
         label="Filter tags"
-        class="flex-basis-45"
-      ></v-select>
+        class="flex-basis-45 tags"
+      >
+        <template v-slot:prepend-inner class="ma-0">
+          <v-icon>mdi-tag-outline</v-icon>
+          <v-btn
+            icon
+            small
+            @click.stop="toggleTagFiltersAnd"
+            @mouseup.stop
+            v-if="tags.length > 1"
+          >
+            <span>{{ tagFiltersAnd ? "AND" : "OR" }}</span>
+          </v-btn>
+        </template>
+      </v-select>
       <div v-if="extensionFilter && extensionSort" class="ms-4" />
 
       <v-select
@@ -92,13 +121,14 @@
         solo-inverted
         hide-details
         :items="sortByItems"
-        prepend-inner-icon="mdi-sort"
         label="Sort by"
         class="flex-basis-45"
       >
-        <template v-slot:append-outer class="ma-0">
-          <v-btn icon small>
-            <v-icon>mdi-sort-ascending</v-icon>
+        <template v-slot:prepend-inner class="ma-0">
+          <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
+            <v-icon>{{
+              sortByDesc ? "mdi-sort-descending" : "mdi-sort-ascending"
+            }}</v-icon>
           </v-btn>
         </template>
       </v-select>
@@ -110,9 +140,11 @@
 import Vue from "vue";
 
 import DefaultNavbar from "@/components/DefaultNavbar.vue";
+import { mapGetters, mapMutations, mapState } from "vuex";
 
 export default Vue.extend({
   name: "CookbookNavbar",
+  props: ["cookbookId"],
   components: {
     DefaultNavbar
   },
@@ -122,21 +154,56 @@ export default Vue.extend({
       { text: "Tastiness", value: "ratingTastiness" },
       { text: "Cost", value: "ratingCost" },
       { text: "Title", value: "title" }
-    ],
-    extensionSort: false,
-    extensionFilter: false
+    ] as { text: string; value: string }[],
+    extensionSort: false as boolean,
+    extensionFilter: false as boolean
   }),
+  methods: {
+    ...mapMutations({
+      setSortBy: "setCookbookSortBy",
+      setSortByDesc: "setCookbookSortByDesc",
+      setTagFilters: "setCookbookTagFilters",
+      setTagFiltersAnd: "setCookbookTagFiltersAnd"
+    }),
+    toggleTagFiltersAnd() {
+      this.setTagFiltersAnd(!this.tagFiltersAnd);
+    },
+    toggleSortByDesc() {
+      this.setSortByDesc(!this.sortByDesc);
+    }
+  },
   computed: {
+    ...mapState([
+      "cookbookSortBy",
+      "cookbookSortByDesc",
+      "cookbookTagFilters",
+      "cookbookTagFiltersAnd"
+    ]),
+    ...mapGetters(["cookbookTags"]),
     sortBy: {
-      get() {
-        var value = this.$store.state.cookbookSortBy;
-        console.log("Getting tags value", value);
-        return value;
+      get(): string[] {
+        return this.cookbookSortBy;
       },
-      set(value) {
-        console.log("Setting tags value", value);
-        this.$store.commit("setCookbookSortBy", value);
+      set(value): void {
+        this.setSortBy(value);
       }
+    },
+    sortByDesc(): boolean {
+      return this.cookbookSortByDesc;
+    },
+    tags: {
+      get(): string[] {
+        return this.cookbookTagFilters;
+      },
+      set(value): void {
+        this.setTagFilters(value);
+      }
+    },
+    tagFiltersAnd(): boolean {
+      return this.cookbookTagFiltersAnd;
+    },
+    tagItems(): string[] {
+      return this.cookbookTags(this.cookbookId);
     }
   }
 });
@@ -154,5 +221,8 @@ export default Vue.extend({
 }
 .flex-basis-45 {
   flex-basis: 45%;
+}
+.tags >>> .v-select__selections {
+  flex-wrap: nowrap;
 }
 </style>

@@ -21,7 +21,43 @@
         fill-height
         class="align-content-space-between justify-center"
       >
-        <v-row justify="end">
+        <v-row
+          :class="{
+            'justify-space-between': editing && !$vuetify.breakpoint.xsOnly,
+            'justify-end': editing && $vuetify.breakpoint.xsOnly,
+            start: !editing
+          }"
+        >
+          <template v-for="tag in tags">
+            <v-chip
+              dark
+              v-if="!editing"
+              class="ma-2"
+              color="#616161AA"
+              v-text="tag"
+              :key="tag"
+            ></v-chip>
+          </template>
+          <v-col
+            cols="12"
+            sm="8"
+            class="py-2 order-2 order-sm-0"
+            v-if="editing"
+          >
+            <v-combobox
+              dark
+              multiple
+              dense
+              hide-selected
+              deletable-chips
+              clearable
+              :value="tags"
+              @input="$emit('update:tags', $event)"
+              :items="tagItems"
+              chips
+              label="Tags"
+            ></v-combobox>
+          </v-col>
           <v-btn v-if="editing" fab small @click="$refs.imgUpload.click()">
             <v-icon>mdi-camera</v-icon>
           </v-btn>
@@ -69,7 +105,8 @@
                   'display-1': $vuetify.breakpoint.smAndUp,
                   headline: $vuetify.breakpoint.xsOnly
                 }"
-              >{{ title || "(untitled recipe)" }}</span>
+                >{{ title || "(untitled recipe)" }}</span
+              >
             </v-card-title>
             <v-card-subtitle class="white--text pl-1">
               <span v-text="subtitle" class="subtitle-1"></span>
@@ -173,6 +210,7 @@ export default Vue.extend({
     "recipeId",
     "thumbURL",
     "content",
+    "tags",
     "saving"
   ],
   data: () => ({
@@ -182,7 +220,8 @@ export default Vue.extend({
       required: (v: string) => !!v || "This field is required"
     },
     imgFile: null as null | File,
-    thumbURLpreview: ""
+    thumbURLpreview: "",
+    tagItems: ["Breakfast", "Dinner", "Gluten-full"]
   }),
   computed: {
     ...mapState({

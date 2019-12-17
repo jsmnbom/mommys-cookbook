@@ -27,7 +27,7 @@ const routes = [
     },
     props: {
       default: true,
-      navbar: false
+      navbar: true
     }
   },
   {
