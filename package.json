@@ -12,6 +12,7 @@
     "@types/vue2-editor": "^2.6.0",
     "fast-average-color": "^5.2.1",
     "firebase": "^7.5.2",
+    "firebase-tools": "^7.10.0",
     "register-service-worker": "^1.6.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",

@@ -11,16 +11,16 @@ Vue.use(Vuex)
 type ActionButton = { icon: string, action?: string, mutation?: string }
 
 interface State {
-  showDrawer: boolean,
-  cookbooks: CookbookList,
-  recipes: { [id: string]: RecipeList },
-  bottomNavActive: string | null,
-  actionButton: ActionButton | null,
-  cookbookDialogActive: boolean,
-  cookbookDialogKey: string | null,
-  currentCookbookId: string | null,
-  editingRecipe: boolean,
-  darkTheme: boolean,
+  showDrawer: boolean
+  cookbooks: CookbookList
+  recipes: { [id: string]: RecipeList }
+  bottomNavActive: string | null
+  actionButton: ActionButton | null
+  cookbookDialogActive: boolean
+  cookbookDialogKey: string | null
+  currentCookbookId: string | null
+  editingRecipe: boolean
+  darkTheme: boolean
   cookbookSortBy: string
 }
 
@@ -37,6 +37,7 @@ const state: State = {
   darkTheme: false,
   cookbookSortBy: "lastEdited"
 };
+
 
 const vuexLocal = new VuexPersistence<State>({
   storage: window.localStorage,

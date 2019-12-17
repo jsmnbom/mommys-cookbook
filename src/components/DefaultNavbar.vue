@@ -14,58 +14,58 @@
       </v-toolbar-title>
     </slot>
 
-    <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
+    <v-spacer v-if="$vuetify.breakpoint.smAndUp" />
 
     <template v-if="$vuetify.breakpoint.smAndUp">
-        <div>
-      <v-tooltip bottom>
-        <template #activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon>mdi-github-circle</v-icon>
-          </v-btn>
-        </template>
-        <span>View project on github</span>
-      </v-tooltip>
+      <div>
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>mdi-github-circle</v-icon>
+            </v-btn>
+          </template>
+          <span>View project on github</span>
+        </v-tooltip>
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" @click="toggleDarkTheme">
-            <v-icon>mdi-brightness-4</v-icon>
-          </v-btn>
-        </template>
-        <span>Toggle dark theme</span>
-      </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" @click="toggleDarkTheme">
+              <v-icon>mdi-brightness-4</v-icon>
+            </v-btn>
+          </template>
+          <span>Toggle dark theme</span>
+        </v-tooltip>
 
-      <v-menu offset-y close-on-click v-if="loggedIn">
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" class="ml-2">
-            <v-avatar size="40">
-              <img :src="userInfo.photoURL" alt="Avatar" />
-            </v-avatar>
-          </v-btn>
-        </template>
+        <v-menu offset-y close-on-click v-if="loggedIn">
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" class="ml-2">
+              <v-avatar size="40">
+                <img :src="userInfo.photoURL" alt="Avatar" />
+              </v-avatar>
+            </v-btn>
+          </template>
 
-        <v-list>
-          <v-list-item>
-            <v-list-item-avatar>
-              <v-img :src="userInfo.photoURL"></v-img>
-            </v-list-item-avatar>
-            <div>
-              <v-list-item-subtitle>Logged in as</v-list-item-subtitle>
-              <v-list-item-title class="subtitle-1">{{
-                userInfo.displayName
-              }}</v-list-item-title>
-            </div>
-          </v-list-item>
-          <v-divider />
-          <v-list-item @click="logout">
-            <v-list-item-title class="text-center red--text"
-              >Sign out</v-list-item-title
-            >
-          </v-list-item>
-        </v-list>
-      </v-menu>
-        </div>
+          <v-list>
+            <v-list-item>
+              <v-list-item-avatar>
+                <v-img :src="userInfo.photoURL"></v-img>
+              </v-list-item-avatar>
+              <div>
+                <v-list-item-subtitle>Logged in as</v-list-item-subtitle>
+                <v-list-item-title class="subtitle-1">{{
+                  userInfo.displayName
+                }}</v-list-item-title>
+              </div>
+            </v-list-item>
+            <v-divider />
+            <v-list-item @click="logout">
+              <v-list-item-title class="text-center red--text"
+                >Sign out</v-list-item-title
+              >
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </template>
     <v-menu offset-y close-on-click v-else>
       <template v-slot:activator="{ on }">
@@ -107,7 +107,7 @@
       </v-list>
     </v-menu>
     <template #extension v-if="extended">
-        <slot name="extension"></slot>
+      <slot name="extension"></slot>
     </template>
   </v-app-bar>
 </template>
