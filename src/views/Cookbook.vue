@@ -158,7 +158,9 @@ export default Vue.extend({
   watch: {
     $route(to: Route, from: Route) {
       if (to.name && to.name == "cookbook") {
-        this.fetchRecipes();
+        if (!(this.cookbookId in this.recipes)) {
+          this.fetchRecipes();
+        }
         this.$store.commit("setCurrentCookbookId", this.cookbookId);
         this.setActionButton();
       }
@@ -185,7 +187,8 @@ export default Vue.extend({
         this.setRecipes();
       }
     );
-
+  },
+  mounted() {
     this.setActionButton();
   }
 });
