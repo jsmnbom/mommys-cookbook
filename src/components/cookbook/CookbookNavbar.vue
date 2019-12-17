@@ -15,6 +15,7 @@
       prepend-inner-icon="mdi-magnify"
       label="Search"
       class="flex-basis-20"
+      v-model="search"
     ></v-text-field>
     <template v-if="$vuetify.breakpoint.mdAndUp">
       <v-spacer />
@@ -163,7 +164,8 @@ export default Vue.extend({
       setSortBy: "setCookbookSortBy",
       setSortByDesc: "setCookbookSortByDesc",
       setTagFilters: "setCookbookTagFilters",
-      setTagFiltersAnd: "setCookbookTagFiltersAnd"
+      setTagFiltersAnd: "setCookbookTagFiltersAnd",
+      setSearch: "setCookbookSearch"
     }),
     toggleTagFiltersAnd() {
       this.setTagFiltersAnd(!this.tagFiltersAnd);
@@ -177,7 +179,8 @@ export default Vue.extend({
       "cookbookSortBy",
       "cookbookSortByDesc",
       "cookbookTagFilters",
-      "cookbookTagFiltersAnd"
+      "cookbookTagFiltersAnd",
+      "cookbookSearch"
     ]),
     ...mapGetters(["cookbookTags"]),
     sortBy: {
@@ -204,6 +207,14 @@ export default Vue.extend({
     },
     tagItems(): string[] {
       return this.cookbookTags(this.cookbookId);
+    },
+    search: {
+      get(): string[] {
+        return this.cookbookSearch;
+      },
+      set(value): void {
+        this.setSearch(value);
+      }
     }
   }
 });

@@ -24,7 +24,8 @@ interface State {
   cookbookSortBy: string,
   cookbookSortByDesc: boolean,
   cookbookTagFilters: string[],
-  cookbookTagFiltersAnd: boolean
+  cookbookTagFiltersAnd: boolean,
+  cookbookSearch: string
 }
 
 const state: State = {
@@ -41,7 +42,8 @@ const state: State = {
   cookbookSortBy: "lastEdited",
   cookbookSortByDesc: false,
   cookbookTagFilters: [],
-  cookbookTagFiltersAnd: false
+  cookbookTagFiltersAnd: false,
+  cookbookSearch: ""
 };
 
 
@@ -129,6 +131,9 @@ const store = new Vuex.Store({
     },
     setCookbookTagFiltersAnd(state, cookbookTagFiltersAnd) {
       state.cookbookTagFiltersAnd = cookbookTagFiltersAnd;
+    },
+    setCookbookSearch(state, cookbookSearch) {
+      state.cookbookSearch = cookbookSearch;
     }
   },
   getters: {

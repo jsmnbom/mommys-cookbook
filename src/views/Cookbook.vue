@@ -8,6 +8,7 @@
       :sort-desc="cookbookSortByDesc"
       :custom-sort="sort"
       :custom-filter="filter"
+      :search="cookbookSearch"
       no-data-text="No recipes found in cookbook"
     >
       <template v-slot:default="props">
@@ -64,7 +65,8 @@ export default Vue.extend({
       "cookbookSortBy",
       "cookbookSortByDesc",
       "cookbookTagFilters",
-      "cookbookTagFiltersAnd"
+      "cookbookTagFiltersAnd",
+      "cookbookSearch"
     ])
   },
   methods: {
