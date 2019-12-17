@@ -1,10 +1,9 @@
 <template>
   <v-col cols="12" sm="6" ref="recipe">
     <v-card dark @click="toRecipe">
-      <v-img-cross-origin
+      <v-img
         :aspect-ratio="16 / 9"
         :src="img"
-        @load="imgLoad"
         ref="img"
         :gradient="
           $vuetify.theme.dark
@@ -96,7 +95,7 @@
             </v-card-actions>
           </v-row>
         </v-container>
-      </v-img-cross-origin>
+      </v-img>
 
       <div class="d-flex flex-no-wrap justify-space-between">
         <div></div>
@@ -110,23 +109,13 @@ import Vue from "vue";
 import { db, RecipeList, RecipeValue, QuerySnapshot } from "@/firebase";
 
 import { randomImgSrc } from "@/utils";
-import CrossOriginVImg from "@/components/CrossOriginVImg";
 
-import FastAverageColor from "fast-average-color";
 import { Route } from "vue-router";
 
-const fac = new FastAverageColor();
 
 export default Vue.extend({
   name: "RecipeListItem",
   props: ["recipe", "cookbookId", "recipeId"],
-  components: {
-    CrossOriginVImg
-  },
-  data: () => ({
-    color: "#fff",
-    isDark: false
-  }),
   computed: {
     img(): string {
       if (this.recipe.thumbURL) {
@@ -136,12 +125,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    imgLoad(img: HTMLImageElement) {
-      const result = fac.getColor(img);
-      this.color = result.hex;
-      this.isDark = !result.isDark;
-    },
-
     async deleteRecipe() {
       await this.$dialog.confirm({
         text: `Do you really want to delete ${this.recipe.title}?<br>This action cannot be undone.`,
