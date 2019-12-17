@@ -1,4 +1,4 @@
-# mommys-cookbook-2
+# Mommy's Cookbook
 
 ## Project setup
 
@@ -33,16 +33,3 @@ npm run lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-## Todo
-
-- Cookbook/recipe not found
-- Sorting and fitlering of recipes
-- Icon
-- Add skeleton loaders
-- Drag and drop to sort ingredients
-- Multiplication of recipes/ingredients
-- Warning when leaving with unsaved changes
-- Maybe use vue-compositions functions and proper vuex modules
-- Don't allow recipe saving if not valid
-- Actually save lastEdited?
