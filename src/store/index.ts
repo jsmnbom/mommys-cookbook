@@ -138,7 +138,6 @@ const store = new Vuex.Store({
   },
   actions: {
     fetchRecipes({ commit }, cookbookId) {
-      console.log("fetchrecipes", cookbookId);
       commit("clearRecipes", cookbookId);
       const inner = (querySnapshot: QuerySnapshot) => {
         querySnapshot.docChanges().forEach(function(change) {

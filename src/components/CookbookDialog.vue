@@ -272,8 +272,6 @@ export default Vue.extend({
         this.img ? await this.handleImage() : ""
       );
 
-      console.log("creating", cookbook);
-
       db.collection("cookbooks")
         .add(cookbook.toObject())
         .then(docRef => {

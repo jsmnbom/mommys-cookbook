@@ -86,7 +86,6 @@ export default Vue.extend({
       });
     },
     sort(items: Items, sortBy: string[], sortDesc: boolean[]) {
-      console.log(items, sortBy, sortDesc);
       items.sort((a, b) => {
         if (sortBy[0] === "lastEdited") {
           if (!sortDesc[0]) {

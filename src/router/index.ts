@@ -69,7 +69,6 @@ const router = new VueRouter({
   mode: "history",
   routes,
   scrollBehavior(to, from, savedPosition) {
-    console.log(to, from, savedPosition);
     // Default scroll position will be 0, 0 unless overridden by a saved position
     const position = {
       x: 0,
@@ -92,7 +91,6 @@ const router = new VueRouter({
     return new Promise(resolve => {
       // @ts-ignore
       this.app.$root.$once("scrollBeforeEnter", () => {
-        console.log(position)
         setTimeout(function() {
           resolve(position);
         }, 20);

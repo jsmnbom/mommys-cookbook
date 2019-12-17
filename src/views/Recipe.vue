@@ -85,8 +85,6 @@ export default Vue.extend({
       this.addIngredientsText = "";
       this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
     }
-    // console.log(this.recipeId, this.cookbookId, this.recipes, this.recipe!);
-    // this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
     this.updateActionButton();
     this.$store.watch(
       state => state.editingRecipe,

@@ -92,7 +92,6 @@ export default Vue.extend({
   methods: {
     saveIngredient({ ingredient }: { ingredient: string }) {
       setTimeout(() => {
-        console.log(ingredient, this.editIngredient);
         // This is probably horribly inefficient
         const index = this.ingredients.indexOf(ingredient);
         if (index !== -1) {

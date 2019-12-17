@@ -89,7 +89,6 @@ export default Vue.extend({
         from.name &&
         (from.name == "recipe" || from.name == "recipe/ingredients")
       ) {
-        console.log("from recipe", window.scrollY);
         this.scrollPositions = {};
       }
 
