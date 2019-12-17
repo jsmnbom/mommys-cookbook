@@ -211,6 +211,7 @@ export default Vue.extend({
     "thumbURL",
     "content",
     "tags",
+    "tagItems",
     "saving"
   ],
   data: () => ({
@@ -221,7 +222,6 @@ export default Vue.extend({
     },
     imgFile: null as null | File,
     thumbURLpreview: "",
-    tagItems: ["Breakfast", "Dinner", "Gluten-full"]
   }),
   computed: {
     ...mapState({
@@ -234,7 +234,7 @@ export default Vue.extend({
         return this.thumbURL;
       }
       return randomImgSrc(this.recipeId, 2);
-    }
+    },
   },
   methods: {
     onImgUpload(

@@ -138,7 +138,7 @@ const store = new Vuex.Store({
   },
   getters: {
     cookbookTags: state => (cookbookId: string): string[] => {
-      return cookbookId in state.recipes ? Object.values(state.recipes[cookbookId]).map((recipe: any) => recipe.tags).flat() : []
+      return cookbookId in state.recipes ? [...new Set(Object.values(state.recipes[cookbookId]).map((recipe: any) => recipe.tags).flat())] : []
     }
   },
   actions: {

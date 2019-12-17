@@ -12,6 +12,7 @@
         :saving="saving"
         v-bind.sync="editedRecipe"
         :recipeId="recipeId"
+        :tagItems="tagItems"
         @update:imgFile="imgFile = $event"
       />
 
@@ -21,6 +22,7 @@
             :saving="saving"
             v-bind.sync="editedRecipe"
             :recipeId="recipeId"
+            :tagItems="tagItems"
             @update:imgFile="imgFile = $event"
           />
         </v-col>
@@ -38,7 +40,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { Route } from "vue-router";
 import { v4 as uuid } from "uuid";
 
@@ -74,7 +76,11 @@ export default Vue.extend({
         ? this.recipes[this.recipeId]
         : null;
     },
-    ...mapState(["cookbooks", "bottomNavActive"])
+    ...mapState(["cookbooks", "bottomNavActive"]),
+    ...mapGetters(["cookbookTags"]),
+    tagItems(): string[] {
+      return this.cookbookTags(this.cookbookId);
+    },
   },
   mounted() {
     if (!this.recipe) {
