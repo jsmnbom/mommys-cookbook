@@ -28,9 +28,9 @@
             </v-col>
             <v-spacer />
             <v-col cols="auto" class="pa-0">
-              <v-menu :close-on-click="closeOnClick" offset-y>
+              <v-menu close-on-click offset-y>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" @click.stop="on" @mousedown.stop>
+                  <v-btn icon v-on="on" @click.stop @mousedown.stop>
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>
@@ -112,7 +112,6 @@ import { randomImgSrc } from "@/utils";
 
 import { Route } from "vue-router";
 
-
 export default Vue.extend({
   name: "RecipeListItem",
   props: ["recipe", "cookbookId", "recipeId"],
@@ -134,15 +133,14 @@ export default Vue.extend({
           true: {
             color: "red",
             text: "Yes I do",
-            handle: () => {
-              return this._deleteRecipe;
-            }
+            handle: this._deleteRecipe
           }
         }
       });
     },
-    async _deleteRecipe() {
+    _deleteRecipe() {
       return new Promise(resolve => {
+        console.log("about to delete", this.recipeId)
         db.collection("recipes")
           .doc(this.recipeId)
           .delete()

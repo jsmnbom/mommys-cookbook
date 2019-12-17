@@ -151,7 +151,7 @@ const store = new Vuex.Store({
             const recipe = RecipeValue.fromObject(data);
             commit("addOrModifyRecipe", { cookbookId, recipeId: change.doc.id, recipe });
           } else if (change.type === "removed") {
-            commit("removeRecipe", change.doc.id);
+            commit("removeRecipe", { cookbookId, recipeId: change.doc.id });
           }
         });
       };
