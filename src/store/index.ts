@@ -40,7 +40,7 @@ const state: State = {
   editingRecipe: false,
   darkTheme: false,
   cookbookSortBy: "lastEdited",
-  cookbookSortByDesc: false,
+  cookbookSortByDesc: true,
   cookbookTagFilters: [],
   cookbookTagFiltersAnd: false,
   cookbookSearch: ""
@@ -180,7 +180,7 @@ const store = new Vuex.Store({
     },
     createRecipe({ commit, state }) {
       if (state.currentCookbookId) {
-        const recipe = new RecipeValue("", "", "", [], [], 0, 0, state.currentCookbookId, null, "");
+        const recipe = new RecipeValue("", "", "", [], [], 0, 0, state.currentCookbookId, new Date(), "");
 
         db.collection("recipes").add(recipe.toObject()).then((docRef) => {
           // @ts-ignore

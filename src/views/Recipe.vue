@@ -109,6 +109,7 @@ export default Vue.extend({
           }
 
           if (editedRecipeObject !== this.recipe!.toObject()) {
+            editedRecipeObject.lastEdited = new Date();
             db.collection("recipes")
               .doc(this.recipeId)
               .update(editedRecipeObject)
