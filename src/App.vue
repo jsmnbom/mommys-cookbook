@@ -3,7 +3,7 @@
     <router-view name="navbar"> </router-view>
     <CookbooksDrawer v-if="!loading && loggedIn" />
     <BottomNavigation v-if="!loading && loggedIn" />
-    <v-content>
+    <v-content class="mb-12">
       <LoadingState v-if="loading" />
       <MissingLoginState v-if="!loading && !loggedIn" />
       <CookbookDialog />
