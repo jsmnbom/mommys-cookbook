@@ -4,7 +4,7 @@
     @input="setDrawer"
     :clipped="$vuetify.breakpoint.lgAndUp"
     app
-    width="350"
+    :width="$vuetify.breakpoint.smAndUp ? 350 : '75vw'"
   >
     <v-list dense>
       <v-list-item>
