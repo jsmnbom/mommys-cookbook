@@ -266,8 +266,8 @@ export default Vue.extend({
     async onCreate() {
       const cookbook = new CookbookValue(
         this.title,
-        this.$store.state.userInfo!.displayName!,
-        this.$store.state.userInfo!.uid,
+        this.$store.state.account.userInfo!.displayName!,
+        this.$store.state.account.userInfo!.uid,
         this.sharedWith,
         this.img ? await this.handleImage() : ""
       );
