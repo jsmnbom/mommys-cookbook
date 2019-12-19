@@ -2,7 +2,7 @@
   <v-app-bar
     :clipped-left="$vuetify.breakpoint.lgAndUp"
     app
-    color="primary"
+    color="secondary"
     dark
     elevate-on-scroll
   >

@@ -6,7 +6,7 @@
       fab
       bottom
       right
-      color="primary"
+      color="accent"
       :class="{ 'mb-12': bottomBarActive }"
       @click="onClick"
       ><v-icon>{{ icon }}</v-icon>
