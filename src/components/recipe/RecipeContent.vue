@@ -64,14 +64,23 @@
                 <v-icon>mdi-camera</v-icon>
               </v-btn>
             </template>
-            <v-list>
+            <v-list dense>
               <v-list-item @click="$refs.imgUpload.click()">
+                <v-list-item-icon>
+                  <v-icon>mdi-file-find-outline</v-icon>
+                </v-list-item-icon>
                 <v-list-item-title>Browse files</v-list-item-title>
               </v-list-item>
               <v-list-item @click="fromURL">
+                <v-list-item-icon>
+                  <v-icon>mdi-earth</v-icon>
+                </v-list-item-icon>
                 <v-list-item-title>From URL</v-list-item-title>
               </v-list-item>
               <v-list-item @click="clipboardDialogOpen = true">
+                <v-list-item-icon>
+                  <v-icon>mdi-clipboard-outline</v-icon>
+                </v-list-item-icon>
                 <v-list-item-title>From clipboard</v-list-item-title>
               </v-list-item>
             </v-list>
