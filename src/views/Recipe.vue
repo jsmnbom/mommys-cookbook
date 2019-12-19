@@ -80,7 +80,10 @@ export default Vue.extend({
     ...mapGetters(["cookbookTags"]),
     tagItems(): string[] {
       return this.cookbookTags(this.cookbookId);
-    }
+    },
+    ...mapState({
+      editing: "editingRecipe"
+    })
   },
   mounted() {
     if (!this.recipe) {
@@ -97,41 +100,50 @@ export default Vue.extend({
       async editingRecipe => {
         this.updateActionButton();
         if (!editingRecipe) {
-          this.saving = true;
+          if (this.$store.state.saveRecipe) {
+            this.saving = true;
 
-          const editedRecipeObject = this.editedRecipe!.toObject();
+            const editedRecipeObject = this.editedRecipe!.toObject();
 
-          if (this.imgFile) {
-            editedRecipeObject.thumbURL = await this.handleImage();
-          }
+            if (this.imgFile) {
+              editedRecipeObject.thumbURL = await this.handleImage();
+            }
 
-          if (this.addIngredientsText) {
-            editedRecipeObject.ingredients = [
-              ...editedRecipeObject.ingredients,
-              ...this.addIngredientsText
-                .split(/\r?\n/)
-                .map(ingredient => ingredient.trim())
-            ];
-          }
+            if (this.addIngredientsText) {
+              editedRecipeObject.ingredients = [
+                ...editedRecipeObject.ingredients,
+                ...this.addIngredientsText
+                  .split(/\r?\n/)
+                  .map(ingredient => ingredient.trim())
+              ];
+            }
 
-          if (editedRecipeObject !== this.recipe!.toObject()) {
-            editedRecipeObject.lastEdited = new Date();
-            db.collection("recipes")
-              .doc(this.recipeId)
-              .update(editedRecipeObject)
-              .then(() => {
-                this.$dialog.message.info("Recipe updated", {
-                  position: "bottom"
+            if (editedRecipeObject !== this.recipe!.toObject()) {
+              editedRecipeObject.lastEdited = new Date();
+              db.collection("recipes")
+                .doc(this.recipeId)
+                .update(editedRecipeObject)
+                .then(() => {
+                  this.$dialog.message.info("Recipe updated", {
+                    position: "bottom"
+                  });
+                  this.saving = false;
+                })
+                .catch(error => {
+                  this.$dialog.message.error("Error updating recipe", {
+                    position: "bottom"
+                  });
+                  console.error(`Error updating recipe:`, error);
+                  this.saving = false;
                 });
-                this.saving = false;
-              })
-              .catch(error => {
-                this.$dialog.message.error("Error updating recipe", {
-                  position: "bottom"
-                });
-                console.error(`Error updating recipe:`, error);
-                this.saving = false;
-              });
+            } else {
+              (this.$refs.form as any).reset();
+              this.imgFile = null;
+              this.addIngredientsText = "";
+              this.editedRecipe = RecipeValue.fromObject(
+                this.recipe!.toObject()
+              );
+            }
           }
         }
       }
@@ -139,10 +151,31 @@ export default Vue.extend({
   },
   beforeRouteEnter(to, from, next) {
     next((vm: any) => {
-      if (to.name && to.name.startsWith("recipe")) {
-        vm.updateActionButton();
-      }
+      vm.updateActionButton();
     });
+  },
+  async beforeRouteLeave(to, from, next) {
+    if (this.editing) {
+      const res = await this.$dialog.confirm({
+        text: "Are you sure you want to leave?<br>You have unsaved changes.",
+        title: "Warning",
+        actions: {
+          false: "No",
+          true: {
+            text: "Yes",
+            color: "red"
+          }
+        }
+      });
+      if (res) {
+        this.$store.commit("discardRecipe");
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
   },
   watch: {
     recipe() {

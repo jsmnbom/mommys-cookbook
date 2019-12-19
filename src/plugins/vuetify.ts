@@ -29,7 +29,10 @@ var vuetify = new Vuetify({
         error: colors.red.accent2
       }
     }
-  }
+  },
+  icons: {
+    iconfont: 'mdi',
+  },
 });
 
 Vue.use(VuetifyDialog, {

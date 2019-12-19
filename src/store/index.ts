@@ -20,11 +20,12 @@ interface State {
   cookbookDialogKey: string | null
   currentCookbookId: string | null
   editingRecipe: boolean
+  saveRecipe: boolean,
   darkTheme: boolean
-  cookbookSortBy: string,
-  cookbookSortByDesc: boolean,
-  cookbookTagFilters: string[],
-  cookbookTagFiltersAnd: boolean,
+  cookbookSortBy: string
+  cookbookSortByDesc: boolean
+  cookbookTagFilters: string[]
+  cookbookTagFiltersAnd: boolean
   cookbookSearch: string
 }
 
@@ -38,6 +39,7 @@ const state: State = {
   cookbookDialogKey: null,
   currentCookbookId: null,
   editingRecipe: false,
+  saveRecipe: false,
   darkTheme: false,
   cookbookSortBy: "lastEdited",
   cookbookSortByDesc: true,
@@ -112,6 +114,11 @@ const store = new Vuex.Store({
       state.editingRecipe = true;
     },
     saveRecipe(state) {
+      state.saveRecipe = true;
+      state.editingRecipe = false;
+    },
+    discardRecipe(state) {
+      state.saveRecipe = false;
       state.editingRecipe = false;
     },
     setCurrentCookbookId(state, currentCookbookId) {
