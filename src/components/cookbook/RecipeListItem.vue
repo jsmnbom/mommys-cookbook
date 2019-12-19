@@ -126,7 +126,7 @@ export default Vue.extend({
   methods: {
     async deleteRecipe() {
       await this.$dialog.confirm({
-        text: `Do you really want to delete ${this.recipe.title}?<br>This action cannot be undone.`,
+        text: `Do you really want to delete ${this.recipe.title || "(untitled recipe)"}?<br>This action cannot be undone.`,
         title: "",
         actions: {
           false: "No",

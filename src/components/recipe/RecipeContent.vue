@@ -137,7 +137,10 @@
             </v-card-subtitle>
           </v-col>
           <v-card-actions class="pa-2 pr-4">
-            <v-row align="end" class="flex-column">
+            <v-row class="flex-column" :class="{
+            'align-end': !$vuetify.breakpoint.xsOnly,
+            'align-center': $vuetify.breakpoint.xsOnly
+          }">
               <v-rating
                 v-if="editing"
                 dense
