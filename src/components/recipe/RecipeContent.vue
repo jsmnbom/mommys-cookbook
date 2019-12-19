@@ -185,6 +185,23 @@
           v-html="content"
         />
       </v-container>
+      <v-container class="px-7">
+        <v-text-field
+          v-if="editing"
+          dark
+          label="Recipe source"
+          class="title"
+          placeholder="Url or book title + page"
+          hint="Start with http:// or https:// to create a link."
+          :value="source"
+          @input="$emit('update:source', $event)"
+        />
+        <span v-else>
+          <i>Source: </i>
+          <a :href="source" v-if="isSourceURL" target="_blank">{{ source }}</a>
+          <span v-else>{{ source }}</span>
+        </span>
+      </v-container>
     </v-card-text>
     <input v-show="false" ref="imgUpload" type="file" @change="onImgUpload" />
   </v-card>
@@ -196,6 +213,12 @@ import { mapState } from "vuex";
 
 import RecipeEditor from "@/components/recipe/RecipeEditor.vue";
 import { randomImgSrc } from "@/utils";
+
+function isValidURL(url: string): boolean {
+  var a = document.createElement("a");
+  a.href = url;
+  return !!a.host && a.host != window.location.host;
+}
 
 export default Vue.extend({
   name: "RecipeContent",
@@ -212,6 +235,7 @@ export default Vue.extend({
     "content",
     "tags",
     "tagItems",
+    "source",
     "saving"
   ],
   data: () => ({
@@ -221,13 +245,13 @@ export default Vue.extend({
       required: (v: string) => !!v || "This field is required"
     },
     imgFile: null as null | File,
-    thumbURLpreview: "",
+    thumbURLpreview: ""
   }),
   computed: {
     ...mapState({
       editing: "editingRecipe"
     }),
-    img() {
+    img(): string {
       if (this.thumbURLpreview) {
         return this.thumbURLpreview;
       } else if (this.thumbURL) {
@@ -235,6 +259,9 @@ export default Vue.extend({
       }
       return randomImgSrc(this.recipeId, 2);
     },
+    isSourceURL(): boolean {
+      return isValidURL(this.source);
+    }
   },
   methods: {
     onImgUpload(

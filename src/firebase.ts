@@ -69,6 +69,7 @@ export default class RecipeValue {
     cookbookId: string,
     lastEdited: firebase.firestore.Timestamp | Date | null,
     thumbURL: string,
+    source: string,
   } | firebase.firestore.DocumentData) {
     return new this(
       data.title,
@@ -80,7 +81,8 @@ export default class RecipeValue {
       data.ratingTastiness,
       data.cookbookId,
       data.lastEdited ? (data.lastEdited instanceof Date ? data.lastEdited : data.lastEdited.toDate()) : null,
-      data.thumbURL
+      data.thumbURL,
+      data.source
     );
   }
 
@@ -94,7 +96,8 @@ export default class RecipeValue {
     public ratingTastiness: number,
     public cookbookId: string,
     public lastEdited: Date | null,
-    public thumbURL: string
+    public thumbURL: string,
+    public source: string
   ) { }
 
   public toObject() {
@@ -108,7 +111,8 @@ export default class RecipeValue {
       ratingTastiness: this.ratingTastiness,
       cookbookId: this.cookbookId,
       lastEdited: this.lastEdited,
-      thumbURL: this.thumbURL
+      thumbURL: this.thumbURL,
+      source: this.source
     };
   }
 }
