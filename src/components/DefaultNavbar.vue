@@ -20,7 +20,7 @@
       <div>
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <v-btn icon v-on="on">
+            <v-btn icon v-on="on" :href="githubURL" target="_blank">
               <v-icon>mdi-github-circle</v-icon>
             </v-btn>
           </template>
@@ -87,7 +87,7 @@
           </div>
         </v-list-item>
         <v-divider />
-        <v-list-item>
+        <v-list-item :href="githubURL" target="_blank">
           <v-list-item-icon>
             <v-icon>mdi-github-circle</v-icon>
           </v-list-item-icon>
@@ -125,7 +125,10 @@ export default Vue.extend({
     ...mapMutations(["toggleDarkTheme"])
   },
   computed: {
-    ...mapState("account", ["loggedIn", "userInfo"])
+    ...mapState("account", ["loggedIn", "userInfo"]),
+    githubURL() {
+      return "https://github.com/jsmnbom/mommys-cookbook"
+    }
   }
 });
 </script>
