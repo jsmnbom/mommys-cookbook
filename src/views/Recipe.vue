@@ -209,7 +209,7 @@ export default Vue.extend({
         width: 1280,
         height: 720
       }).catch(error => {
-        this.$dialog.message.error("Error uplading image", {
+        this.$dialog.message.error("Error compressing image", {
           position: "bottom"
         });
         console.error(`Error compressing image: `, error);
@@ -217,7 +217,7 @@ export default Vue.extend({
       if (blob) {
         const downloadURL = await uploadFile(
           blob,
-          `images/recipe/${uuid()}.${this.imgFile!.name.split(".").pop()}`,
+          `images/recipe/${this.recipeId}.jpg`,
           progress => (this.uploadProgress = progress)
         ).catch(error => {
           this.$dialog.message.error("Error uplading image", {

@@ -58,9 +58,24 @@
               label="Tags"
             ></v-combobox>
           </v-col>
-          <v-btn v-if="editing" fab small @click="$refs.imgUpload.click()">
-            <v-icon>mdi-camera</v-icon>
-          </v-btn>
+          <v-menu offset-y v-if="editing">
+            <template v-slot:activator="{ attrs, on: menu }">
+              <v-btn fab small v-on="menu" v-bind="attrs">
+                <v-icon>mdi-camera</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="$refs.imgUpload.click()">
+                <v-list-item-title>Browse files</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="fromURL">
+                <v-list-item-title>From URL</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="clipboardDialogOpen = true">
+                <v-list-item-title>From clipboard</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-row>
         <v-row
           align="end"
@@ -199,11 +214,39 @@
         <span v-else>
           <i>Source: </i>
           <a :href="source" v-if="isSourceURL" target="_blank">{{ source }}</a>
-          <span v-else>{{ source || 'unknown' }}</span>
+          <span v-else>{{ source || "unknown" }}</span>
         </span>
       </v-container>
     </v-card-text>
     <input v-show="false" ref="imgUpload" type="file" @change="onImgUpload" />
+    <v-dialog width="500" v-model="clipboardDialogOpen">
+      <v-card>
+        <v-card-title>
+          Upload from clipboard
+        </v-card-title>
+
+        <v-card-text>
+          <span>Press CTRL+V to paste your image</span>
+          <div
+            class="clipboardDiv"
+            contenteditable="true"
+            @paste="paste"
+            @blur="clipboardDialogOpen = false"
+            v-text="clipboardDivText"
+            ref="clipboardDiv"
+          ></div>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="clipboardDialogOpen = false">
+            Cancel
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -212,7 +255,7 @@ import Vue from "vue";
 import { mapState } from "vuex";
 
 import RecipeEditor from "@/components/recipe/RecipeEditor.vue";
-import { randomImgSrc } from "@/utils";
+import { randomImgSrc, compressImage } from "@/utils";
 
 function isValidURL(url: string): boolean {
   var a = document.createElement("a");
@@ -245,7 +288,9 @@ export default Vue.extend({
       required: (v: string) => !!v || "This field is required"
     },
     imgFile: null as null | File,
-    thumbURLpreview: ""
+    thumbURLpreview: "",
+    clipboardDialogOpen: false,
+    clipboardDivText: ""
   }),
   computed: {
     ...mapState({
@@ -270,6 +315,42 @@ export default Vue.extend({
       const imgFile = event.target.files[0];
       this.thumbURLpreview = URL.createObjectURL(imgFile);
       this.$emit("update:imgFile", imgFile);
+    },
+    async fromURL() {
+      let res = await this.$dialog.prompt({
+        text: "Image URL",
+        title: "Upload from URL"
+      });
+      if (res) {
+        fetch(
+          "https://mommys-cookbook-cors.jsmnbom.workers.dev/?" +
+            encodeURIComponent(res)
+        )
+          .then(res => res.blob())
+          .then(blob => {
+            this.thumbURLpreview = URL.createObjectURL(blob);
+            this.$emit("update:imgFile", blob);
+          });
+      }
+    },
+    paste(e: any) {
+      if (e.clipboardData.files[0]) {
+        this.thumbURLpreview = URL.createObjectURL(e.clipboardData.files[0]);
+        this.$emit("update:imgFile", e.clipboardData.files[0]);
+        this.clipboardDialogOpen = false;
+      }
+    }
+  },
+  watch: {
+    clipboardDialogOpen(open: boolean) {
+      if (open) {
+        this.$nextTick(() => {
+          this.clipboardDivText = "";
+          setTimeout(() => {
+            (this.$refs.clipboardDiv as any).focus();
+          }, 0);
+        });
+      }
     }
   }
 });
@@ -291,5 +372,11 @@ export default Vue.extend({
 }
 .theme--dark .recipeContent {
   color: white;
+}
+</style>
+
+<style>
+.clipboardDiv * {
+  display: none;
 }
 </style>

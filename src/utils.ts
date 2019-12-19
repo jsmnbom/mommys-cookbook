@@ -1,7 +1,7 @@
 import { storage, TaskEvent, TaskState } from './firebase';
 
 export function compressImage(
-    file: File,
+    file: File | Blob,
     maxSize?: { width: number, height: number },
 ): Promise<Blob> {
     const canvas = document.createElement('canvas');
