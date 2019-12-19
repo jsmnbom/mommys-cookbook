@@ -187,7 +187,7 @@ const store = new Vuex.Store({
     },
     createRecipe({ commit, state }) {
       if (state.currentCookbookId) {
-        const recipe = new RecipeValue("", "", "", [], [], 0, 0, state.currentCookbookId, new Date(), "");
+        const recipe = new RecipeValue("", "", "", [], [], 0, 0, state.currentCookbookId, new Date(), "", "");
 
         db.collection("recipes").add(recipe.toObject()).then((docRef) => {
           // @ts-ignore

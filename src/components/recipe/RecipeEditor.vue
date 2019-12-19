@@ -183,6 +183,9 @@ export default Vue.extend({
 
 @import "~quill/dist/quill.core.css";
 
+.ql-hidden {
+  display: none;
+}
 .ql-editor {
 	padding: 16px 32px;
 }
