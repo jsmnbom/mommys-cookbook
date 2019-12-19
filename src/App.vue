@@ -12,9 +12,7 @@
         mode="out-in"
         @before-enter="beforeEnter"
       >
-        <keep-alive>
-          <router-view :key="routerKey"></router-view>
-        </keep-alive>
+        <router-view :key="routerKey"></router-view>
       </transition>
     </v-content>
     <ActionButton />
@@ -35,6 +33,10 @@ const DEFAULT_TRANSITION = "fade";
 
 export default Vue.extend({
   name: "App",
+  metaInfo: {
+    title: "Home",
+    titleTemplate: "%s - Mommy's Cookbook"
+  },
   computed: {
     ...mapState("account", ["loggedIn"]),
     loading() {

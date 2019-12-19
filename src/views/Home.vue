@@ -14,7 +14,10 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn large color="primary" @click="$store.commit('createCookbook')"
+            <v-btn
+              large
+              color="primary"
+              @click="$store.commit('createCookbook')"
               >Create new cookbook</v-btn
             >
           </v-col>

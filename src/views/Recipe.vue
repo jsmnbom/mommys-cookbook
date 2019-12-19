@@ -52,6 +52,14 @@ import { compressImage, uploadFile } from "@/utils";
 export default Vue.extend({
   name: "Recipe",
   props: ["cookbookId", "recipeId", "ingredients"],
+  metaInfo() {
+    const recipeTitle = this.recipe
+      ? (this.recipe as RecipeValue).title || "(untitled recipe)"
+      : "Recipe";
+    return {
+      title: recipeTitle
+    };
+  },
   data: () => ({
     editedRecipe: null as RecipeValue | null,
     saving: false,

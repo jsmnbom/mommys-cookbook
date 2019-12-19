@@ -29,7 +29,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { db, RecipeList, RecipeValue, QuerySnapshot } from "@/firebase";
+import {
+  db,
+  RecipeList,
+  RecipeValue,
+  QuerySnapshot,
+  CookbookValue
+} from "@/firebase";
 
 import RecipeListItem from "@/components/cookbook/RecipeListItem.vue";
 
@@ -53,6 +59,14 @@ function stringFilter(value: any, search: string | null) {
 export default Vue.extend({
   name: "Cookbook",
   props: ["cookbookId"],
+  metaInfo() {
+    const cookbookTitle = this.cookbooks[this.cookbookId]
+      ? this.cookbooks[this.cookbookId].title
+      : "Cookbook";
+    return {
+      title: cookbookTitle
+    };
+  },
   components: {
     RecipeListItem
   },
@@ -62,6 +76,7 @@ export default Vue.extend({
   computed: {
     ...mapState([
       "recipes",
+      "cookbooks",
       "cookbookSortBy",
       "cookbookSortByDesc",
       "cookbookTagFilters",
