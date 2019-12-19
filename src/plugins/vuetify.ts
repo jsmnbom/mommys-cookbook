@@ -11,22 +11,22 @@ var vuetify = new Vuetify({
   theme: {
     themes: {
       dark: {
-        primary: colors.deepPurple.lighten2, //'#C2185B',
-        accent: colors.purple.lighten1, //'#03A9F4',
-        secondary: colors.pink.darken1, //'#009688',
-        success: '#4CAF50',
-        info: '#2196F3',
-        warning: '#FB8C00',
-        error: '#FF5252'
+        primary: colors.deepPurple.lighten2,
+        accent: colors.purple.lighten1,
+        secondary: colors.pink.darken1,
+        success: colors.green.base,
+        info: colors.blue.base,
+        warning: colors.orange.darken1,
+        error: colors.red.accent2
       },
       light: {
-        primary: colors.deepPurple.darken2, //'#EC407A',
-        accent: colors.deepPurple.darken1, //'#03A9F4',
-        secondary: colors.pink.lighten1, //'#009688',
-        success: '#4CAF50',
-        info: '#2196F3',
-        warning: '#FB8C00',
-        error: '#FF5252'
+        primary: colors.deepPurple.darken2,
+        accent: colors.purple.darken1,
+        secondary: colors.pink.lighten1,
+        success: colors.green.base,
+        info: colors.blue.base,
+        warning: colors.orange.darken1,
+        error: colors.red.accent2
       }
     }
   }
