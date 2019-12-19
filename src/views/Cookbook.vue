@@ -155,20 +155,20 @@ export default Vue.extend({
       return items;
     }
   },
-  watch: {
-    $route(to: Route, from: Route) {
-      if (to.name && to.name == "cookbook") {
-        if (!(this.cookbookId in this.recipes)) {
-          this.fetchRecipes();
-        }
-        this.$store.commit("setCurrentCookbookId", this.cookbookId);
-        this.setActionButton();
-      }
+  beforeRouteEnter(to, from, next) {
+    next((vm: any) => {
       if (from.name && from.name == "cookbook") {
-        this.$store.commit("setCurrentCookbookId", null);
-        this.$store.commit("setActionButton", null);
+        vm.$store.commit("setCurrentCookbookId", null);
+        vm.$store.commit("setActionButton", null);
       }
-    }
+      if (to.name && to.name == "cookbook") {
+        if (!(vm.cookbookId in vm.recipes)) {
+          vm.fetchRecipes();
+        }
+        vm.$store.commit("setCurrentCookbookId", vm.cookbookId);
+        vm.setActionButton();
+      }
+    });
   },
   created() {
     this.fetchRecipes();

@@ -80,7 +80,7 @@ export default Vue.extend({
     ...mapGetters(["cookbookTags"]),
     tagItems(): string[] {
       return this.cookbookTags(this.cookbookId);
-    },
+    }
   },
   mounted() {
     if (!this.recipe) {
@@ -137,12 +137,14 @@ export default Vue.extend({
       }
     );
   },
-  watch: {
-    $route(to: Route, from: Route) {
+  beforeRouteEnter(to, from, next) {
+    next((vm: any) => {
       if (to.name && to.name.startsWith("recipe")) {
-        this.updateActionButton();
+        vm.updateActionButton();
       }
-    },
+    });
+  },
+  watch: {
     recipe() {
       if (this.recipe) {
         if (this.$refs.form) (this.$refs.form as any).reset();

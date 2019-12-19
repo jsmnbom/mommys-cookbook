@@ -199,7 +199,7 @@
         <span v-else>
           <i>Source: </i>
           <a :href="source" v-if="isSourceURL" target="_blank">{{ source }}</a>
-          <span v-else>{{ source }}</span>
+          <span v-else>{{ source || 'unknown' }}</span>
         </span>
       </v-container>
     </v-card-text>
