@@ -5,6 +5,7 @@ import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
 import './plugins/vue-meta';
+import './plugins/vue-dompurify-html';
 
 Vue.config.productionTip = false
 

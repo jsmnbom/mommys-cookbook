@@ -209,7 +209,7 @@
             'black--text': !$vuetify.theme.dark,
             'white--text': $vuetify.theme.dark
           }"
-          v-html="content"
+          v-dompurify-html="content"
         />
       </v-container>
       <v-container class="px-7">
