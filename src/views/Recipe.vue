@@ -1,22 +1,30 @@
 <template>
-  <v-form ref="form" lazy-validation v-model="valid" v-if="recipe">
-    <v-container v-if="editedRecipe">
-      <RecipeIngredientsList
-        v-if="hasBottomNav && ingredients"
-        v-bind.sync="editedRecipe"
-        :saving="saving"
-        @update:addIngredientsText="addIngredientsText = $event"
-      />
-      <RecipeContent
-        v-else-if="hasBottomNav"
-        :saving="saving"
-        v-bind.sync="editedRecipe"
-        :recipeId="recipeId"
-        :tagItems="tagItems"
-        @update:imgFile="imgFile = $event"
-      />
+  <v-form ref="form" lazy-validation v-model="valid" v-if="editedRecipe">
+    <v-tabs-items v-if="tabbed" v-model="activeTab">
+      <v-tab-item value="content">
+        <div style="height: calc(100vh - 48px - 56px); overflow-y: scroll;">
+          <RecipeContent
+            :saving="saving"
+            v-bind.sync="editedRecipe"
+            :recipeId="recipeId"
+            :tagItems="tagItems"
+            @update:imgFile="imgFile = $event"
+          />
+        </div>
+      </v-tab-item>
+      <v-tab-item value="ingredients">
+        <div style="height: calc(100vh - 48px - 56px); overflow-y: scroll;">
+          <RecipeIngredientsList
+            v-bind.sync="editedRecipe"
+            :saving="saving"
+            @update:addIngredientsText="addIngredientsText = $event"
+          />
+        </div>
+      </v-tab-item>
+    </v-tabs-items>
 
-      <v-row align="start" justify="space-around" v-else>
+    <v-container v-else>
+      <v-row align="start" justify="space-around">
         <v-col cols="8">
           <RecipeContent
             :saving="saving"
@@ -73,7 +81,7 @@ export default Vue.extend({
     RecipeContent
   },
   computed: {
-    hasBottomNav(): boolean {
+    tabbed(): boolean {
       return this.$vuetify.breakpoint.smAndDown;
     },
     recipes(): RecipeList {
@@ -91,13 +99,21 @@ export default Vue.extend({
     },
     ...mapState({
       editing: "editingRecipe"
-    })
+    }),
+    activeTab: {
+      get() {
+        return this.$store.state.recipeActiveTab;
+      },
+      set(recipeActiveTab) {
+        this.$store.commit("setRecipeActiveTab", recipeActiveTab);
+      }
+    }
   },
   mounted() {
     if (!this.recipe) {
       this.$store.dispatch("fetchRecipes", this.cookbookId);
     } else {
-      (this.$refs.form as any).reset();
+      if (this.$refs.form) (this.$refs.form as any).reset();
       this.imgFile = null;
       this.addIngredientsText = "";
       this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
@@ -243,3 +259,5 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style></style>

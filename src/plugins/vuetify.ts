@@ -28,6 +28,9 @@ var vuetify = new Vuetify({
         warning: colors.orange.darken1,
         error: colors.red.accent2
       }
+    },
+    options: {
+      customProperties: true,
     }
   },
   icons: {

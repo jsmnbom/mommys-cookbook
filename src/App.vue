@@ -2,8 +2,7 @@
   <v-app>
     <router-view name="navbar"> </router-view>
     <CookbooksDrawer v-if="!loading && loggedIn" />
-    <BottomNavigation v-if="!loading && loggedIn" />
-    <v-content class="mb-12">
+    <v-content class="">
       <LoadingState v-if="loading" />
       <MissingLoginState v-if="!loading && !loggedIn" />
       <CookbookDialog />
@@ -24,7 +23,6 @@ import Vue from "vue";
 import CookbooksDrawer from "./components/CookbooksDrawer.vue";
 import LoadingState from "./components/LoadingState.vue";
 import MissingLoginState from "./components/MissingLoginState.vue";
-import BottomNavigation from "./components/BottomNavigation.vue";
 import ActionButton from "./components/ActionButton.vue";
 import CookbookDialog from "./components/CookbookDialog.vue";
 import { mapState } from "vuex";
@@ -86,7 +84,6 @@ export default Vue.extend({
     CookbooksDrawer,
     LoadingState,
     MissingLoginState,
-    BottomNavigation,
     ActionButton,
     CookbookDialog
   },
@@ -104,10 +101,6 @@ export default Vue.extend({
 </script>
 
 <style>
-.v-application.theme--dark a {
-  color: #7e57c2; /* colors.purple.lighten1 */
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.3s;

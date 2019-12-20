@@ -6,6 +6,7 @@ import Recipe from "@/views/Recipe.vue"
 
 import DefaultNavbar from "@/components/DefaultNavbar.vue";
 import CookbookNavbar from "@/components/cookbook/CookbookNavbar.vue";
+import RecipeNavbar from "@/components/recipe/RecipeNavbar.vue";
 
 Vue.use(VueRouter)
 
@@ -35,7 +36,7 @@ const routes = [
     name: "recipe",
     components: {
       default: Recipe,
-      navbar: DefaultNavbar
+      navbar: RecipeNavbar
     },
     props: {
       default: true,

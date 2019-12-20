@@ -12,9 +12,8 @@
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
         <span>Mommy's Cookbook</span>
       </v-toolbar-title>
+      <v-spacer />
     </slot>
-
-    <v-spacer v-if="$vuetify.breakpoint.smAndUp" />
 
     <template v-if="$vuetify.breakpoint.smAndUp">
       <div>
@@ -127,7 +126,7 @@ export default Vue.extend({
   computed: {
     ...mapState("account", ["loggedIn", "userInfo"]),
     githubURL() {
-      return "https://github.com/jsmnbom/mommys-cookbook"
+      return "https://github.com/jsmnbom/mommys-cookbook";
     }
   }
 });

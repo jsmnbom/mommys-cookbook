@@ -24,7 +24,7 @@
           }}</v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card :loading="saving">
+      <v-card :loading="saving" style="height: calc(100vh - 56px);" class="d-flex flex-column">
         <template slot="progress">
           <v-progress-linear
             :value="uploadProgress"
@@ -32,7 +32,7 @@
             color="deep-purple accent-4"
           ></v-progress-linear>
         </template>
-        <v-card-text>
+        <v-card-text class="grow">
           <v-container>
             <v-row justify="center" align="center">
               <v-col cols="auto">

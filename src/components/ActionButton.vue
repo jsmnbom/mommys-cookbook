@@ -7,7 +7,6 @@
       bottom
       right
       color="accent"
-      :class="{ 'mb-12': bottomBarActive }"
       @click="onClick"
       ><v-icon>{{ icon }}</v-icon>
     </v-btn>
@@ -25,14 +24,7 @@ export default Vue.extend({
     show: false
   }),
   computed: {
-    ...mapState(["actionButton"]),
-    bottomBarActive(): boolean {
-      return (
-        !!this.$route.name &&
-        this.$route.name.startsWith("recipe") &&
-        this.$vuetify.breakpoint.smAndDown
-      );
-    }
+    ...mapState(["actionButton"])
   },
   created() {
     this.$store.watch(

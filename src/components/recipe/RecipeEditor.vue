@@ -204,4 +204,7 @@ export default Vue.extend({
 .ql-editor.ql-blank::before {
   left: 32px
 }
+.ql-editor ol li:not(.ql-direction-rtl), .ql-editor ul li:not(.ql-direction-rtl) {
+    padding-left: 0;
+}
 </style>

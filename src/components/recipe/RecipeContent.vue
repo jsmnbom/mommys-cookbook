@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="saving">
+  <v-card :loading="saving" :tile="$vuetify.breakpoint.smAndDown">
     <v-img
       :aspect-ratio="16 / 9"
       :src="img"
@@ -137,10 +137,13 @@
             </v-card-subtitle>
           </v-col>
           <v-card-actions class="pa-2 pr-4">
-            <v-row class="flex-column" :class="{
-            'align-end': !$vuetify.breakpoint.xsOnly,
-            'align-center': $vuetify.breakpoint.xsOnly
-          }">
+            <v-row
+              class="flex-column"
+              :class="{
+                'align-end': !$vuetify.breakpoint.xsOnly,
+                'align-center': $vuetify.breakpoint.xsOnly
+              }"
+            >
               <v-rating
                 v-if="editing"
                 dense
@@ -225,7 +228,9 @@
         />
         <span v-else>
           <i>Source: </i>
-          <a :href="source" v-if="isSourceURL" target="_blank">{{ source }}</a>
+          <a class="source" :href="source" v-if="isSourceURL" target="_blank">{{
+            source
+          }}</a>
           <span v-else>{{ source || "unknown" }}</span>
         </span>
       </v-container>
@@ -384,6 +389,12 @@ export default Vue.extend({
 }
 .theme--dark .recipeContent {
   color: white;
+}
+.theme--light a.source {
+  color: var(--v-primary-darken2);
+}
+.theme--dark a.source {
+  color: var(--v-primary-lighten2);
 }
 </style>
 
