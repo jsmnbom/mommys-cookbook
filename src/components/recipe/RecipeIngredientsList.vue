@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="saving" class="card">
+  <v-card :loading="saving" class="mb-actionbutton">
     <v-data-table
       v-model="selectedItems"
       :items="items"

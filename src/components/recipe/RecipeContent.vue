@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="saving" :tile="$vuetify.breakpoint.smAndDown">
+  <v-card :loading="saving" :tile="$vuetify.breakpoint.smAndDown" class="mb-actionbutton">
     <v-img
       :aspect-ratio="16 / 9"
       :src="img"

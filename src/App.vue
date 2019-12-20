@@ -101,6 +101,10 @@ export default Vue.extend({
 </script>
 
 <style>
+.mb-actionbutton {
+  margin-bottom: 96px;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.3s;

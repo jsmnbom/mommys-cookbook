@@ -30,7 +30,7 @@
             <v-col cols="auto" class="pa-0">
               <v-menu close-on-click offset-y>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" @click.stop @mousedown.stop>
+                  <v-btn icon v-on="on" @click.stop @mousedown.stop touchstart.stop>
                     <v-icon>mdi-dots-vertical</v-icon>
                   </v-btn>
                 </template>

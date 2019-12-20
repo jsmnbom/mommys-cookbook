@@ -1,8 +1,11 @@
 <template>
   <v-form ref="form" lazy-validation v-model="valid" v-if="editedRecipe">
-    <v-tabs-items v-if="tabbed" v-model="activeTab">
-      <v-tab-item value="content">
-        <div style="height: calc(100vh - 48px - 56px); overflow-y: scroll;">
+    <div ref="recipeTabs" v-if="tabbed" class="swiper-container">
+      <div class="swiper-wrapper">
+        <div
+          class="swiper-slide"
+          style="height: calc(100vh - 48px - 56px); overflow-y: scroll;"
+        >
           <RecipeContent
             :saving="saving"
             v-bind.sync="editedRecipe"
@@ -11,17 +14,18 @@
             @update:imgFile="imgFile = $event"
           />
         </div>
-      </v-tab-item>
-      <v-tab-item value="ingredients">
-        <div style="height: calc(100vh - 48px - 56px); overflow-y: scroll;">
+        <div
+          class="swiper-slide"
+          style="height: calc(100vh - 48px - 56px); overflow-y: scroll;"
+        >
           <RecipeIngredientsList
             v-bind.sync="editedRecipe"
             :saving="saving"
             @update:addIngredientsText="addIngredientsText = $event"
           />
         </div>
-      </v-tab-item>
-    </v-tabs-items>
+      </div>
+    </div>
 
     <v-container v-else>
       <v-row align="start" justify="space-around">
@@ -52,6 +56,9 @@ import { mapState, mapGetters } from "vuex";
 import { Route } from "vue-router";
 import { v4 as uuid } from "uuid";
 
+import Swiper from "swiper";
+import "swiper/src/swiper.scss";
+
 import RecipeIngredientsList from "@/components/recipe/RecipeIngredientsList.vue";
 import RecipeContent from "@/components/recipe/RecipeContent.vue";
 import { RecipeValue, RecipeList, db } from "@/firebase";
@@ -74,7 +81,9 @@ export default Vue.extend({
     valid: false,
     imgFile: null as File | null,
     uploadProgress: 0 as number | null,
-    addIngredientsText: ""
+    addIngredientsText: "",
+    tabsSwiper: null as any,
+    tabs: ["content", "ingredients"]
   }),
   components: {
     RecipeIngredientsList,
@@ -209,6 +218,19 @@ export default Vue.extend({
         this.addIngredientsText = "";
         this.editedRecipe = RecipeValue.fromObject(this.recipe!.toObject());
       }
+    },
+    editedRecipe(newEditedRecipe, oldEditedRecipe) {
+      this.$nextTick(() => {
+        if (newEditedRecipe && !oldEditedRecipe) {
+          this.tabsSwiper = new Swiper(this.$refs.recipeTabs as HTMLElement);
+          this.tabsSwiper.on("slideChange", () => {
+            this.activeTab = this.tabs[this.tabsSwiper.realIndex];
+          });
+        }
+      });
+    },
+    activeTab(newActiveTab) {
+      this.tabsSwiper.slideTo(this.tabs.indexOf(newActiveTab));
     }
   },
   beforeDestroy() {
@@ -260,4 +282,8 @@ export default Vue.extend({
 });
 </script>
 
-<style></style>
+<style>
+.swiper-container > * {
+  box-sizing: border-box;
+}
+</style>

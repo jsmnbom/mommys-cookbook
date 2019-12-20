@@ -53,7 +53,7 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click.stop="onEditCookbook(item.key)" @mousedown.stop>
+            <v-btn icon @click.stop="onEditCookbook(item.key)" @mousedown.stop @touchstart.stop>
               <v-icon color="grey lighten-1">mdi-dots-vertical</v-icon>
             </v-btn>
           </v-list-item-action>
