@@ -30,14 +30,20 @@
             <v-col cols="auto" class="pa-0">
               <v-menu close-on-click offset-y>
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" @click.stop @mousedown.stop touchstart.stop>
-                    <v-icon>mdi-dots-vertical</v-icon>
+                  <v-btn
+                    icon
+                    v-on="on"
+                    @click.stop
+                    @mousedown.stop
+                    touchstart.stop
+                  >
+                    <v-icon>{{mdiDotsVertical}}</v-icon>
                   </v-btn>
                 </template>
                 <v-list dense>
                   <v-list-item @click="deleteRecipe">
                     <v-list-item-icon>
-                      <v-icon>mdi-delete</v-icon>
+                      <v-icon>mdiDelete</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>Delete recipe</v-list-item-content>
                   </v-list-item>
@@ -75,7 +81,7 @@
                   readonly
                   color="red"
                   background-color="red lighten-1"
-                  full-icon="mdi-heart"
+                  :full-icon="mdiHeart"
                   :length="recipe.ratingTastiness"
                   :value="recipe.ratingTastiness"
                 >
@@ -87,7 +93,7 @@
                   readonly
                   color="green darken-1"
                   background-color="green lighten-4"
-                  full-icon="mdi-currency-usd"
+                  :full-icon="mdiCurrencyUsd"
                   :length="recipe.ratingCost"
                   :value="recipe.ratingCost"
                 ></v-rating>
@@ -112,9 +118,17 @@ import { randomImgSrc } from "@/utils";
 
 import { Route } from "vue-router";
 
+import { mdiDotsVertical, mdiDelete, mdiHeart, mdiCurrencyUsd } from "@mdi/js";
+
 export default Vue.extend({
   name: "RecipeListItem",
   props: ["recipe", "cookbookId", "recipeId"],
+  data: () => ({
+    mdiDotsVertical,
+    mdiDelete,
+    mdiHeart,
+    mdiCurrencyUsd
+  }),
   computed: {
     img(): string {
       if (this.recipe.thumbURL) {
@@ -126,7 +140,8 @@ export default Vue.extend({
   methods: {
     async deleteRecipe() {
       await this.$dialog.confirm({
-        text: `Do you really want to delete ${this.recipe.title || "(untitled recipe)"}?<br>This action cannot be undone.`,
+        text: `Do you really want to delete ${this.recipe.title ||
+          "(untitled recipe)"}?<br>This action cannot be undone.`,
         title: "",
         actions: {
           false: "No",
@@ -140,7 +155,7 @@ export default Vue.extend({
     },
     _deleteRecipe() {
       return new Promise(resolve => {
-        console.log("about to delete", this.recipeId)
+        console.log("about to delete", this.recipeId);
         db.collection("recipes")
           .doc(this.recipeId)
           .delete()

@@ -56,6 +56,7 @@ import { mapState, mapGetters } from "vuex";
 import { Route } from "vue-router";
 import { v4 as uuid } from "uuid";
 
+// @ts-ignore
 import Swiper from "swiper";
 import "swiper/src/swiper.scss";
 
@@ -63,6 +64,8 @@ import RecipeIngredientsList from "@/components/recipe/RecipeIngredientsList.vue
 import RecipeContent from "@/components/recipe/RecipeContent.vue";
 import { RecipeValue, RecipeList, db } from "@/firebase";
 import { compressImage, uploadFile } from "@/utils";
+
+import { mdiCheck, mdiPencilOutline } from "@mdi/js";
 
 export default Vue.extend({
   name: "Recipe",
@@ -240,12 +243,12 @@ export default Vue.extend({
     updateActionButton() {
       if (this.$store.state.editingRecipe) {
         this.$store.commit("setActionButton", {
-          icon: "mdi-check",
+          icon: mdiCheck,
           mutation: "saveRecipe"
         });
       } else {
         this.$store.commit("setActionButton", {
-          icon: "mdi-pencil-outline",
+          icon: mdiPencilOutline,
           mutation: "editRecipe"
         });
       }

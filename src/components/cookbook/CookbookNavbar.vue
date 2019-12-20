@@ -12,7 +12,7 @@
       flat
       solo-inverted
       hide-details
-      prepend-inner-icon="mdi-magnify"
+      :prepend-inner-icon="mdiMagnify"
       label="Search"
       class="flex-basis-20"
       v-model="search"
@@ -32,7 +32,7 @@
         v-model="tags"
       >
         <template v-slot:prepend-inner class="ma-0">
-          <v-icon>mdi-tag-outline</v-icon>
+          <v-icon>{{ mdiTagOutline }}</v-icon>
           <v-btn
             icon
             small
@@ -58,7 +58,7 @@
         <template v-slot:prepend-inner class="ma-0">
           <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
             <v-icon>{{
-              sortByDesc ? "mdi-sort-descending" : "mdi-sort-ascending"
+              sortByDesc ? mdiSortDescending : mdiSortAscending
             }}</v-icon>
           </v-btn>
         </template>
@@ -71,7 +71,7 @@
         :input-value="extensionFilter"
         class="ms-1"
       >
-        <v-icon>mdi-tag</v-icon>
+        <v-icon>{{ mdiTag }}</v-icon>
       </v-btn>
       <v-btn
         icon
@@ -79,7 +79,7 @@
         :input-value="extensionSort"
         class="ms-1"
       >
-        <v-icon>mdi-sort</v-icon>
+        <v-icon>{{ mdiSort }}</v-icon>
       </v-btn>
     </template>
 
@@ -99,7 +99,7 @@
         class="flex-basis-45 tags"
       >
         <template v-slot:prepend-inner class="ma-0">
-          <v-icon>mdi-tag-outline</v-icon>
+          <v-icon>{{ mdiTagOutline }}</v-icon>
           <v-btn
             icon
             small
@@ -128,7 +128,7 @@
         <template v-slot:prepend-inner class="ma-0">
           <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
             <v-icon>{{
-              sortByDesc ? "mdi-sort-descending" : "mdi-sort-ascending"
+              sortByDesc ? mdiSortDescensing : mdiSortAscending
             }}</v-icon>
           </v-btn>
         </template>
@@ -143,6 +143,15 @@ import Vue from "vue";
 import DefaultNavbar from "@/components/DefaultNavbar.vue";
 import { mapGetters, mapMutations, mapState } from "vuex";
 
+import {
+  mdiMagnify,
+  mdiTagOutline,
+  mdiSortDescending,
+  mdiSortAscending,
+  mdiTag,
+  mdiSort
+} from "@mdi/js";
+
 export default Vue.extend({
   name: "CookbookNavbar",
   props: ["cookbookId"],
@@ -150,6 +159,12 @@ export default Vue.extend({
     DefaultNavbar
   },
   data: () => ({
+    mdiMagnify,
+    mdiTagOutline,
+    mdiSortDescending,
+    mdiSortAscending,
+    mdiTag,
+    mdiSort,
     sortByItems: [
       { text: "Recent", value: "lastEdited" },
       { text: "Tastiness", value: "ratingTastiness" },

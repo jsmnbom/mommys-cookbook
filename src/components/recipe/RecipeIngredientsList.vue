@@ -36,7 +36,7 @@
       <template v-slot:item.action="{ item }">
         <v-btn icon @click="deleteItem(item)" v-if="editing">
           <v-icon>
-            mdi-delete
+            {{ mdiDelete }}
           </v-icon>
         </v-btn>
       </template>
@@ -50,7 +50,6 @@
       auto-grow
       rows="1"
       clearable
-      clear-icon="mdi-close"
       placeholder="2 cups of sugar"
       hint="One ingredient per line"
       @change="$emit('update:addIngredientsText', $event)"
@@ -62,10 +61,14 @@
 import Vue from "vue";
 import { mapState } from "vuex";
 
+import { mdiClose, mdiDelete } from "@mdi/js";
+
 export default Vue.extend({
   name: "RecipeIngredientsList",
   props: ["ingredients", "saving"],
   data: () => ({
+    mdiClose,
+    mdiDelete,
     headers: [
       {
         text: "Ingredients",

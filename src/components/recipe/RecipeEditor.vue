@@ -9,7 +9,7 @@
             value="1"
             v-mutate.attr.class="onMutate"
           >
-            <v-icon>mdi-format-header-1</v-icon>
+            <v-icon>{{mdiFormatHeader1}}</v-icon>
           </v-btn>
           <v-btn
             icon
@@ -17,7 +17,7 @@
             value="2"
             v-mutate.attr.class="onMutate"
           >
-            <v-icon>mdi-format-header-2</v-icon>
+            <v-icon>{{mdiFormatHeader2}}</v-icon>
           </v-btn>
           <v-btn
             icon
@@ -25,21 +25,21 @@
             value="3"
             v-mutate.attr.class="onMutate"
           >
-            <v-icon>mdi-format-header-3</v-icon>
+            <v-icon>{{mdiFormatHeader3}}</v-icon>
           </v-btn>
         </v-col>
         <v-col cols="auto" class="py-1">
           <v-btn icon class="ql-bold" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-bold</v-icon>
+            <v-icon>{{mdiFormatBold}}</v-icon>
           </v-btn>
           <v-btn icon class="ql-italic" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-italic</v-icon>
+            <v-icon>{{mdiFormatItalic}}</v-icon>
           </v-btn>
           <v-btn icon class="ql-underline" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-underline</v-icon>
+            <v-icon>{{mdiFormatUnderline}}</v-icon>
           </v-btn>
           <v-btn icon class="ql-strike" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-strikethrough</v-icon>
+            <v-icon>{{mdiFormatStrikethrough}}</v-icon>
           </v-btn>
         </v-col>
         <v-col cols="auto" class="py-1">
@@ -49,7 +49,7 @@
             value="ordered"
             v-mutate.attr.class="onMutate"
           >
-            <v-icon>mdi-format-list-numbered</v-icon>
+            <v-icon>{{mdiFormatListNumbered}}</v-icon>
           </v-btn>
           <v-btn
             icon
@@ -57,26 +57,26 @@
             value="bullet"
             v-mutate.attr.class="onMutate"
           >
-            <v-icon>mdi-format-list-bulleted</v-icon>
+            <v-icon>{{mdiFormatListBulleted}}</v-icon>
           </v-btn>
         </v-col>
         <v-col cols="auto" class="py-1">
           <v-btn icon class="ql-align" value="" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-align-left</v-icon>
+            <v-icon>{{mdiFormatAlignLeft}}</v-icon>
           </v-btn>
           <v-btn icon class="ql-align" value="center" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-align-center</v-icon>
+            <v-icon>{{mdiFormatAlignCenter}}</v-icon>
           </v-btn>
           <v-btn icon class="ql-align" value="right" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-align-right</v-icon>
+            <v-icon>{{mdiFormatAlignRight}}</v-icon>
           </v-btn>
           <!-- <v-btn icon class="ql-align" value="justify" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-align-justify</v-icon>
+            <v-icon>{{mdiFormatAlignJustify}}</v-icon>
           </v-btn> -->
         </v-col>
         <v-col cols="auto" class="py-0">
           <v-btn icon class="ql-clean" v-mutate.attr.class="onMutate">
-            <v-icon>mdi-format-clear</v-icon>
+            <v-icon>{{mdiFormatClear}}</v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -109,6 +109,8 @@ delete icons.clean;
 const AlignStyle = Quill.import("attributors/style/align");
 Quill.register(AlignStyle, true);
 
+import {mdiFormatHeader1, mdiFormatHeader2, mdiFormatHeader3, mdiFormatBold, mdiFormatItalic, mdiFormatUnderline, mdiFormatStrikethrough, mdiFormatListNumbered, mdiFormatListBulleted, mdiFormatAlignLeft, mdiFormatAlignCenter, mdiFormatAlignRight, mdiFormatAlignJustify, mdiFormatClear} from "@mdi/js";
+
 export default Vue.extend({
   name: "RecipeEditor",
   components: {
@@ -116,6 +118,7 @@ export default Vue.extend({
   },
   props: ["value"],
   data: () => ({
+    mdiFormatHeader1, mdiFormatHeader2, mdiFormatHeader3, mdiFormatBold, mdiFormatItalic, mdiFormatUnderline, mdiFormatStrikethrough, mdiFormatListNumbered, mdiFormatListBulleted, mdiFormatAlignLeft, mdiFormatAlignCenter, mdiFormatAlignRight, mdiFormatAlignJustify, mdiFormatClear,
     toolbar: [
       [{ header: [false, 1, 2, 3] }],
       ["bold", "italic", "underline", "strike"],

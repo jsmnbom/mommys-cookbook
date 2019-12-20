@@ -20,7 +20,7 @@
         <v-tooltip bottom>
           <template #activator="{ on }">
             <v-btn icon v-on="on" :href="githubURL" target="_blank">
-              <v-icon>mdi-github-circle</v-icon>
+              <v-icon>{{mdiGithubCircle}}</v-icon>
             </v-btn>
           </template>
           <span>View project on github</span>
@@ -29,7 +29,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="toggleDarkTheme">
-              <v-icon>mdi-brightness-4</v-icon>
+              <v-icon>{{mdiBrightness4}}</v-icon>
             </v-btn>
           </template>
           <span>Toggle dark theme</span>
@@ -69,7 +69,7 @@
     <v-menu offset-y close-on-click v-else>
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
-          <v-icon>mdi-dots-vertical</v-icon>
+          <v-icon>{{mdiDotsVertical}}</v-icon>
         </v-btn>
       </template>
 
@@ -88,12 +88,14 @@
         <v-divider />
         <v-list-item :href="githubURL" target="_blank">
           <v-list-item-icon>
-            <v-icon>mdi-github-circle</v-icon>
+            <v-icon>{{mdiGithubCircle}}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>View project on github</v-list-item-title>
         </v-list-item>
         <v-list-item @click="toggleDarkTheme">
-          <v-list-item-icon><v-icon>mdi-brightness-4</v-icon></v-list-item-icon>
+          <v-list-item-icon>
+            <v-icon>{{ mdiBrightness_4 }}</v-icon>
+            </v-list-item-icon>
           <v-list-item-title>Toggle dark theme</v-list-item-title>
         </v-list-item>
 
@@ -114,10 +116,16 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapActions, mapGetters, mapState, mapMutations } from "vuex";
+import { mdiGithubCircle, mdiBrightness4, mdiDotsVertical } from "@mdi/js";
 
 export default Vue.extend({
   name: "DefaultNavbar",
   props: { extended: { type: Boolean, default: () => false } },
+  data: () => ({
+    mdiGithubCircle,
+    mdiBrightness4,
+    mdiDotsVertical
+  }),
   methods: {
     ...mapMutations(["toggleDrawer"]),
     ...mapActions("account", ["login", "logout"]),

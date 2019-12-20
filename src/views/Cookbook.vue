@@ -42,6 +42,8 @@ import RecipeListItem from "@/components/cookbook/RecipeListItem.vue";
 import { Route } from "vue-router";
 import { mapState } from "vuex";
 
+import { mdiPlus } from "@mdi/js";
+
 type Items = { recipeId: string; recipe: RecipeValue }[];
 
 function stringFilter(value: any, search: string | null) {
@@ -98,7 +100,7 @@ export default Vue.extend({
     },
     setActionButton() {
       this.$store.commit("setActionButton", {
-        icon: "mdi-plus",
+        icon: mdiPlus,
         action: "createRecipe"
       });
     },

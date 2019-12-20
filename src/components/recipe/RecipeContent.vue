@@ -1,5 +1,9 @@
 <template>
-  <v-card :loading="saving" :tile="$vuetify.breakpoint.smAndDown" class="mb-actionbutton">
+  <v-card
+    :loading="saving"
+    :tile="$vuetify.breakpoint.smAndDown"
+    class="mb-actionbutton"
+  >
     <v-img
       :aspect-ratio="16 / 9"
       :src="img"
@@ -61,25 +65,25 @@
           <v-menu offset-y v-if="editing">
             <template v-slot:activator="{ attrs, on: menu }">
               <v-btn fab small v-on="menu" v-bind="attrs">
-                <v-icon>mdi-camera</v-icon>
+                <v-icon>{{ mdiCamera }}</v-icon>
               </v-btn>
             </template>
             <v-list dense>
               <v-list-item @click="$refs.imgUpload.click()">
                 <v-list-item-icon>
-                  <v-icon>mdi-file-find-outline</v-icon>
+                  <v-icon>{{ mdiFileFindOutline }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Browse files</v-list-item-title>
               </v-list-item>
               <v-list-item @click="fromURL">
                 <v-list-item-icon>
-                  <v-icon>mdi-earth</v-icon>
+                  <v-icon>{{ mdiEarth }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>From URL</v-list-item-title>
               </v-list-item>
               <v-list-item @click="clipboardDialogOpen = true">
                 <v-list-item-icon>
-                  <v-icon>mdi-clipboard-outline</v-icon>
+                  <v-icon>{{ mdiClipboardOutline }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>From clipboard</v-list-item-title>
               </v-list-item>
@@ -119,7 +123,6 @@
               clearable
               :value="subtitle"
               @input="$emit('update:subtitle', $event)"
-              clear-icon="mdi-close"
             />
           </v-col>
           <v-col v-else cols="12" sm="6" class="py-0 order-2 order-sm-0">
@@ -150,8 +153,8 @@
                 size="32"
                 color="red"
                 background-color="red lighten-1"
-                full-icon="mdi-heart"
-                empty-icon="mdi-heart-outline"
+                :full-icon="mdiHeart"
+                :empty-icon="mdiHeartOutline"
                 length="5"
                 :value="ratingTastiness"
                 @input="$emit('update:ratingTastiness', $event)"
@@ -164,7 +167,7 @@
                 readonly
                 color="red"
                 background-color="red lighten-1"
-                full-icon="mdi-heart"
+                :full-icon="mdiHeart"
                 :length="ratingTastiness"
                 :value="ratingTastiness"
               ></v-rating>
@@ -174,8 +177,8 @@
                 size="32"
                 color="green darken-1"
                 background-color="green lighten-4"
-                full-icon="mdi-currency-usd"
-                empty-icon="mdi-currency-usd"
+                :full-icon="mdiCurrencyUsd"
+                :empty-icon="mdiCurrencyUsd"
                 length="5"
                 :value="ratingCost"
                 @input="$emit('update:ratingCost', $event)"
@@ -188,7 +191,7 @@
                 readonly
                 color="green darken-1"
                 background-color="green lighten-4"
-                full-icon="mdi-currency-usd"
+                :full-icon="mdiCurrencyUsd"
                 :length="ratingCost"
                 :value="ratingCost"
               ></v-rating>
@@ -228,9 +231,14 @@
         />
         <span v-else>
           <i>Source: </i>
-          <a class="source" :href="source" v-if="isSourceURL" target="_blank">{{
-            source
-          }}</a>
+          <a
+            class="source"
+            :href="source"
+            v-if="isSourceURL"
+            target="_blank"
+            rel="noreferrer"
+            >{{ source }}</a
+          >
           <span v-else>{{ source || "unknown" }}</span>
         </span>
       </v-container>
@@ -274,6 +282,17 @@ import { mapState } from "vuex";
 import RecipeEditor from "@/components/recipe/RecipeEditor.vue";
 import { randomImgSrc, compressImage } from "@/utils";
 
+import {
+  mdiCamera,
+  mdiFileFindOutline,
+  mdiEarth,
+  mdiClipboardOutline,
+  mdiClose,
+  mdiHeart,
+  mdiHeartOutline,
+  mdiCurrencyUsd
+} from "@mdi/js";
+
 function isValidURL(url: string): boolean {
   var a = document.createElement("a");
   a.href = url;
@@ -299,6 +318,14 @@ export default Vue.extend({
     "saving"
   ],
   data: () => ({
+    mdiCamera,
+    mdiFileFindOutline,
+    mdiEarth,
+    mdiClipboardOutline,
+    mdiClose,
+    mdiHeart,
+    mdiHeartOutline,
+    mdiCurrencyUsd,
     rules: {
       max: (len: number) => (v: string) =>
         (v || "").length <= len || `Please type at most ${len} characters`,

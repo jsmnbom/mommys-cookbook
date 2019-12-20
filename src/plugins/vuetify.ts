@@ -34,7 +34,7 @@ var vuetify = new Vuetify({
     }
   },
   icons: {
-    iconfont: 'mdi',
+    iconfont: 'mdiSvg',
   },
 });
 

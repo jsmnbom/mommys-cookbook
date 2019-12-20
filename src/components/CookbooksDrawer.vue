@@ -45,7 +45,7 @@
               v-if="item.cookbook.thumbURL"
               :src="item.cookbook.thumbURL"
             />
-            <v-icon v-else>mdi-image</v-icon>
+            <v-icon v-else>{{ mdiImage }}</v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
@@ -53,15 +53,20 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click.stop="onEditCookbook(item.key)" @mousedown.stop @touchstart.stop>
-              <v-icon color="grey lighten-1">mdi-dots-vertical</v-icon>
+            <v-btn
+              icon
+              @click.stop="onEditCookbook(item.key)"
+              @mousedown.stop
+              @touchstart.stop
+            >
+              <v-icon color="grey lighten-1">{{ mdiDotsVertical }}</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
       </template>
       <v-list-item @click="$store.commit('createCookbook')">
         <v-list-item-icon class="ml-2">
-          <v-icon>mdi-plus-circle</v-icon>
+          <v-icon>{{ mdiPlusCircle }}</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -78,8 +83,15 @@ import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { db, CookbookValue, QuerySnapshot } from "@/firebase";
 
+import { mdiDotsVertical, mdiImage, mdiPlusCircle } from "@mdi/js";
+
 export default Vue.extend({
   name: "CookbooksDrawer",
+  data: () => ({
+    mdiDotsVertical,
+    mdiImage,
+    mdiPlusCircle
+  }),
   computed: {
     ...mapState(["showDrawer", "cookbooks", "recipes"]),
     items() {

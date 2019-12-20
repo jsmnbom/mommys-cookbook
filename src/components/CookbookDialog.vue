@@ -15,7 +15,7 @@
           @click="$store.commit('closeCookbookDialog')"
           :disabled="saving"
         >
-          <v-icon>mdi-close</v-icon>
+          <v-icon>mdiClose</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-items>
@@ -45,7 +45,7 @@
                   }"
                 >
                   <v-img v-if="img" :src="img" />
-                  <v-icon v-else x-large>mdi-image</v-icon>
+                  <v-icon v-else x-large>mdiImage</v-icon>
                   <v-btn
                     fab
                     small
@@ -53,7 +53,7 @@
                     :disabled="saving"
                     @click="$refs.imgUpload.click()"
                   >
-                    <v-icon>mdi-camera</v-icon>
+                    <v-icon>mdiCamera</v-icon>
                   </v-btn>
                 </v-avatar>
               </v-col>
@@ -150,9 +150,12 @@ import { v4 as uuid } from "uuid";
 import { compressImage, uploadFile } from "@/utils";
 import { db, CookbookValue } from "@/firebase";
 
+import {mdiClose, mdiImage, mdiCamera} from "@mdi/js";
+
 export default Vue.extend({
   name: "CookbookDialog",
   data: () => ({
+    mdiClose, mdiImage, mdiCamera,
     imgFocus: false,
     img: "",
     imgFile: null as null | File,

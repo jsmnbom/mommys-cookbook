@@ -2,7 +2,7 @@
   <v-container class="fill-height">
     <v-row class="mb-6" justify="center" no-gutters>
       <v-col md="auto" class="text-center">
-        <v-icon class="display-4">mdi-account-plus</v-icon>
+        <v-icon class="display-4">mdiBookOpen</v-icon>
         <h1 class="display-1">No cookbook selected!</h1>
         <p class="subtitle-1">Please select a cookbook or create a new one.</p>
         <v-row class="hidden-sm-and-up">
@@ -32,8 +32,13 @@ import Vue from "vue";
 import CookbooksDrawer from "@/components/CookbooksDrawer.vue";
 import { mapMutations } from "vuex";
 
+import { mdiBookOpen } from "@mdi/js";
+
 export default Vue.extend({
   name: "home",
+  data: () => ({
+    mdiBookOpen
+  }),
   components: {
     CookbooksDrawer
   },
