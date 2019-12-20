@@ -11,7 +11,7 @@
       disable-pagination
       disable-sort
       disable-filtering
-      mobile-breakpoint="0"
+      :mobile-breakpoint="0"
     >
       <template v-slot:header.ingredient="{ header }">
         <span v-text="header.text" class="subtitle-1"></span>
