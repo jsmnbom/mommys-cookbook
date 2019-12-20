@@ -33,7 +33,10 @@ export default Vue.extend({
   name: "App",
   metaInfo: {
     title: "Home",
-    titleTemplate: "%s - Mommy's Cookbook"
+    titleTemplate: "%s - Mommy's Cookbook",
+    meta: [
+      {name: "description", content: "The app for all your cookbook needs."}
+    ]
   },
   computed: {
     ...mapState("account", ["loggedIn"]),

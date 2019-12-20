@@ -19,8 +19,15 @@
       <div>
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <v-btn icon v-on="on" :href="githubURL" target="_blank">
-              <v-icon>{{mdiGithubCircle}}</v-icon>
+            <v-btn
+              icon
+              v-on="on"
+              :href="githubURL"
+              target="_blank"
+              aria-label="View project on github"
+              rel="noopener"
+            >
+              <v-icon>{{ mdiGithubCircle }}</v-icon>
             </v-btn>
           </template>
           <span>View project on github</span>
@@ -28,8 +35,13 @@
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" @click="toggleDarkTheme">
-              <v-icon>{{mdiBrightness4}}</v-icon>
+            <v-btn
+              icon
+              v-on="on"
+              @click="toggleDarkTheme"
+              aria-label="Toggle dark theme"
+            >
+              <v-icon>{{ mdiBrightness4 }}</v-icon>
             </v-btn>
           </template>
           <span>Toggle dark theme</span>
@@ -69,7 +81,7 @@
     <v-menu offset-y close-on-click v-else>
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
-          <v-icon>{{mdiDotsVertical}}</v-icon>
+          <v-icon>{{ mdiDotsVertical }}</v-icon>
         </v-btn>
       </template>
 
@@ -86,16 +98,16 @@
           </div>
         </v-list-item>
         <v-divider />
-        <v-list-item :href="githubURL" target="_blank">
+        <v-list-item :href="githubURL" target="_blank" rel="noopener">
           <v-list-item-icon>
-            <v-icon>{{mdiGithubCircle}}</v-icon>
+            <v-icon>{{ mdiGithubCircle }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>View project on github</v-list-item-title>
         </v-list-item>
         <v-list-item @click="toggleDarkTheme">
           <v-list-item-icon>
             <v-icon>{{ mdiBrightness_4 }}</v-icon>
-            </v-list-item-icon>
+          </v-list-item-icon>
           <v-list-item-title>Toggle dark theme</v-list-item-title>
         </v-list-item>
 

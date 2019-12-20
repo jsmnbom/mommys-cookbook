@@ -22,7 +22,7 @@ var vuetify = new Vuetify({
       light: {
         primary: colors.deepPurple.darken2,
         accent: colors.purple.darken1,
-        secondary: colors.pink.lighten1,
+        secondary: colors.pink.darken1,
         success: colors.green.base,
         info: colors.blue.base,
         warning: colors.orange.darken1,

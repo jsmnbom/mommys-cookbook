@@ -2,7 +2,7 @@
   <v-container class="fill-height">
     <v-row class="mb-6" justify="center" no-gutters>
       <v-col md="auto" class="text-center">
-        <v-icon class="display-4">mdiBookOpen</v-icon>
+        <v-icon style="height: 96px; width: 96px;">{{ mdiBookOpen }}</v-icon>
         <h1 class="display-1">No cookbook selected!</h1>
         <p class="subtitle-1">Please select a cookbook or create a new one.</p>
         <v-row class="hidden-sm-and-up">
