@@ -6,6 +6,6 @@ module.exports = {
   pwa: {
     name: "Mommy's Cookbook",
     appleMobileWebAppStatusBarStyle: "black-translucent",
-    themeColor: '#673AB7',
+    themeColor: '#E91E63',
   }
 }

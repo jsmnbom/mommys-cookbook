@@ -104,6 +104,10 @@ export default Vue.extend({
 </script>
 
 <style>
+.v-application.theme--dark a {
+  color: #7e57c2; /* colors.purple.lighten1 */
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.3s;
