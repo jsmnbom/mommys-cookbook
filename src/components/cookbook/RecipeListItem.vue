@@ -37,13 +37,13 @@
                     @mousedown.stop
                     touchstart.stop
                   >
-                    <v-icon>{{mdiDotsVertical}}</v-icon>
+                    <v-icon>{{ mdiDotsVertical }}</v-icon>
                   </v-btn>
                 </template>
                 <v-list dense>
                   <v-list-item @click="deleteRecipe">
                     <v-list-item-icon>
-                      <v-icon>mdiDelete</v-icon>
+                      <v-icon>{{ mdiDelete }}</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>Delete recipe</v-list-item-content>
                   </v-list-item>

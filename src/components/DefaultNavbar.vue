@@ -106,7 +106,7 @@
         </v-list-item>
         <v-list-item @click="toggleDarkTheme">
           <v-list-item-icon>
-            <v-icon>{{ mdiBrightness_4 }}</v-icon>
+            <v-icon>{{ mdiBrightness4 }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Toggle dark theme</v-list-item-title>
         </v-list-item>
