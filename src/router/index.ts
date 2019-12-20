@@ -1,19 +1,13 @@
 import Vue from "vue"
-import VueRouter, { Route } from "vue-router"
+import VueRouter from "vue-router"
 
-const Home = () => import(
-  /* webpackChunkName: "Home" */
-  /* webpackPreload: true */
-  '@/views/Home.vue');
-const Cookbook = () => import(/* webpackChunkName: "Cookbook" */'@/views/Recipe.vue');
-const Recipe = () => import(/* webpackChunkName: "Recipe" */'@/views/Recipe.vue');
+import Home from "@/views/Home.vue";
+import Cookbook from "@/views/Cookbook.vue";
+import Recipe from "@/views/Recipe.vue";
 
-const DefaultNavbar = () => import(
-  /* webpackChunkName: "DefaultNavbar"*/
-  /* webpackPreload: true */
-  '@/components/DefaultNavbar.vue');
-const CookbookNavbar = () => import(/* webpackChunkName: "CookbookNavbar" */'@/components/cookbook/CookbookNavbar.vue');
-const RecipeNavbar = () => import(/* webpackChunkName: "RecipeNavbar" */'@/components/recipe/RecipeNavbar.vue');
+import DefaultNavbar from "@/components/DefaultNavbar.vue";
+import CookbookNavbar from "@/components/cookbook/CookbookNavbar.vue";
+import RecipeNavbar from "@/components/recipe/RecipeNavbar.vue";
 
 Vue.use(VueRouter)
 
