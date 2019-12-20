@@ -1,12 +1,13 @@
 import Vue from "vue"
 import VueRouter, { Route } from "vue-router"
-import Home from "@/views/Home.vue"
-import Cookbook from "@/views/Cookbook.vue"
-import Recipe from "@/views/Recipe.vue"
 
-import DefaultNavbar from "@/components/DefaultNavbar.vue";
-import CookbookNavbar from "@/components/cookbook/CookbookNavbar.vue";
-import RecipeNavbar from "@/components/recipe/RecipeNavbar.vue";
+const Home = () => import(/* webpackChunkName: "Home" */'@/views/Home.vue');
+const Cookbook = () => import(/* webpackChunkName: "Cookbook" */'@/views/Recipe.vue');
+const Recipe = () => import(/* webpackChunkName: "Recipe" */'@/views/Recipe.vue');
+
+const DefaultNavbar = () => import(/* webpackChunkName: "DefaultNavbar" */'@/components/DefaultNavbar.vue');
+const CookbookNavbar = () => import(/* webpackChunkName: "CookbookNavbar" */'@/components/cookbook/CookbookNavbar.vue');
+const RecipeNavbar = () => import(/* webpackChunkName: "RecipeNavbar" */'@/components/recipe/RecipeNavbar.vue');
 
 Vue.use(VueRouter)
 
@@ -20,7 +21,7 @@ const routes = [
     }
   },
   {
-    path: "/cookbook/:cookbookId",
+    path: "/CookbookNavbar/:cookbookId",
     name: "cookbook",
     components: {
       default: Cookbook,
@@ -42,29 +43,8 @@ const routes = [
       default: true,
       navbar: false
     }
-  },
-  {
-    path: "/cookbook/:cookbookId/recipe/:recipeId/ingredients",
-    name: "recipe/ingredients",
-    components: {
-      default: Recipe,
-      navbar: DefaultNavbar
-    },
-    meta: { transitionName: "slide" },
-    props: {
-      default: (route: Route) => ({ ingredients: true, ...route.params }),
-      navbar: false
-    }
   }
-  // {
-  //   path: "/about",
-  //   name: "about",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ "../views/About.vue")
-  // }
-]
+];
 
 const router = new VueRouter({
   mode: "history",

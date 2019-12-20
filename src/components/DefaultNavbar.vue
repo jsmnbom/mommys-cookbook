@@ -49,7 +49,7 @@
 
         <v-menu offset-y close-on-click v-if="loggedIn">
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" class="ml-2">
+            <v-btn icon v-on="on" class="ml-2" aria-label="Account">
               <v-avatar size="40">
                 <img :src="userInfo.photoURL" alt="Avatar" />
               </v-avatar>
@@ -80,7 +80,7 @@
     </template>
     <v-menu offset-y close-on-click v-else>
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on">
+        <v-btn icon v-on="on" aria-label="Open menu">
           <v-icon>{{ mdiDotsVertical }}</v-icon>
         </v-btn>
       </template>
