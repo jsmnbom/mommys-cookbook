@@ -11,7 +11,9 @@ module.exports = {
     themeColor: "#E91E63",
     workboxPluginMode: "GenerateSW",
     workboxOptions: {
-      navigateFallback: "index.html"
+      navigateFallback: "index.html",
+      exclude: [/\.map$/, /^manifest.*\.js$/, /^_redirects$/],
+      skipWaiting: true
     }
   },
   configureWebpack: {
