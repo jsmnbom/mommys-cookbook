@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/auth';
-import 'firebase/storage';
+import 'firebase/firestore/dist/index.esm.js';
+import 'firebase/auth/dist/index.esm.js';
+import 'firebase/storage/dist/index.esm.js';
 
 const app = firebase.initializeApp({
   apiKey: "AIzaSyCSC1XcitA3Q0RVSDpvoT9EAKjBCELwfso",

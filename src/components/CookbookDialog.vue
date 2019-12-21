@@ -15,7 +15,7 @@
           @click="$store.commit('closeCookbookDialog')"
           :disabled="saving"
         >
-          <v-icon>mdiClose</v-icon>
+          <v-icon>{{ mdiClose }}</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-items>
@@ -24,7 +24,11 @@
           }}</v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card :loading="saving" style="height: calc(100vh - 56px);" class="d-flex flex-column">
+      <v-card
+        :loading="saving"
+        style="height: calc(100vh - 56px);"
+        class="d-flex flex-column"
+      >
         <template slot="progress">
           <v-progress-linear
             :value="uploadProgress"
@@ -53,7 +57,7 @@
                     :disabled="saving"
                     @click="$refs.imgUpload.click()"
                   >
-                    <v-icon>mdiCamera</v-icon>
+                    <v-icon>{{ mdiCamera }}</v-icon>
                   </v-btn>
                 </v-avatar>
               </v-col>
@@ -150,12 +154,14 @@ import { v4 as uuid } from "uuid";
 import { compressImage, uploadFile } from "@/utils";
 import { db, CookbookValue } from "@/firebase";
 
-import {mdiClose, mdiImage, mdiCamera} from "@mdi/js";
+import { mdiClose, mdiImage, mdiCamera } from "@mdi/js";
 
 export default Vue.extend({
   name: "CookbookDialog",
   data: () => ({
-    mdiClose, mdiImage, mdiCamera,
+    mdiClose,
+    mdiImage,
+    mdiCamera,
     imgFocus: false,
     img: "",
     imgFile: null as null | File,

@@ -1,3 +1,7 @@
+const path = require("path");
+const glob = require("glob-all");
+const PurgecssPlugin = require("purgecss-webpack-plugin");
+
 module.exports = {
   lintOnSave: false,
   transpileDependencies: ["vuetify"],
@@ -8,5 +12,17 @@ module.exports = {
     manifestOptions: {
       start_url: "/"
     }
+  },
+  configureWebpack: {
+    plugins: [
+      new PurgecssPlugin({
+        paths: glob.sync([
+          path.join(__dirname, "./public/index.html"),
+          path.join(__dirname, "./**/*.vue"),
+          path.join(__dirname, "./src/**/*.ts"),
+          path.join(__dirname, "./node_modules/vuetify/src/**/*.ts")
+        ])
+      })
+    ]
   }
 };

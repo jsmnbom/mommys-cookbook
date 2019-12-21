@@ -11,7 +11,7 @@ var vuetify = new Vuetify({
   theme: {
     themes: {
       dark: {
-        primary: colors.deepPurple.lighten2,
+        primary: colors.purple.lighten2,
         accent: colors.purple.lighten1,
         secondary: colors.pink.darken1,
         success: colors.green.base,
@@ -20,7 +20,7 @@ var vuetify = new Vuetify({
         error: colors.red.accent2
       },
       light: {
-        primary: colors.deepPurple.darken2,
+        primary: colors.purple.darken2,
         accent: colors.purple.darken1,
         secondary: colors.pink.darken1,
         success: colors.green.base,

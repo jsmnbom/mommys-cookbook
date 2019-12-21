@@ -56,8 +56,7 @@ import { mapState, mapGetters } from "vuex";
 import { Route } from "vue-router";
 import { v4 as uuid } from "uuid";
 
-// @ts-ignore
-import Swiper from "swiper";
+import { Swiper } from 'swiper/js/swiper.esm.js';
 import "swiper/src/swiper.scss";
 
 import RecipeIngredientsList from "@/components/recipe/RecipeIngredientsList.vue";

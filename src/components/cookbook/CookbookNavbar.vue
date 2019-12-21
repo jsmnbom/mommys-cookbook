@@ -128,7 +128,7 @@
         <template v-slot:prepend-inner class="ma-0">
           <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
             <v-icon>{{
-              sortByDesc ? mdiSortDescensing : mdiSortAscending
+              sortByDesc ? mdiSortDescending : mdiSortAscending
             }}</v-icon>
           </v-btn>
         </template>
