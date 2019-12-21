@@ -4,7 +4,7 @@
       <span>Mommy's Cookbook</span>
     </v-toolbar-title>
 
-    <v-spacer v-if="$vuetify.breakpoint.smAndUp" />
+    <v-spacer v-if="$vuetify.breakpoint.mdAndUp" />
 
     <v-text-field
       clearable

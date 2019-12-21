@@ -16,7 +16,7 @@
           class="align-content-space-between justify-center"
         >
           <v-row justify="space-between">
-            <v-col class="col-auto pa-0">
+            <v-col class="col-10 col-xs-11 pa-0">
               <template v-for="tag in recipe.tags">
                 <v-chip
                   class="ma-2"
@@ -27,10 +27,11 @@
               </template>
             </v-col>
             <v-spacer />
-            <v-col class="col-auto pa-0">
+            <v-col class="col-2 col-xs-1 pa-0 justify-end d-flex">
               <v-menu close-on-click offset-y>
                 <template v-slot:activator="{ on }">
                   <v-btn
+                  class="align-self-start"
                     icon
                     v-on="on"
                     @click.stop
