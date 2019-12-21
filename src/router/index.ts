@@ -3,11 +3,11 @@ import VueRouter from "vue-router"
 
 import Home from "@/views/Home.vue";
 import Cookbook from "@/views/Cookbook.vue";
-import Recipe from "@/views/Recipe.vue";
+const Recipe = () => import(/* webpackChunkName: "Recipe" */ "@/views/Recipe.vue")
 
 import DefaultNavbar from "@/components/DefaultNavbar.vue";
 import CookbookNavbar from "@/components/cookbook/CookbookNavbar.vue";
-import RecipeNavbar from "@/components/recipe/RecipeNavbar.vue";
+const RecipeNavbar = () => import(/* webpackChunkName: "Recipe" */ "@/components/recipe/RecipeNavbar.vue")
 
 Vue.use(VueRouter)
 
