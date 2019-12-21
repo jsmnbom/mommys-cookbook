@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" sm="6" ref="recipe">
+  <v-col class="col-12 col-sm-6" ref="recipe">
     <v-card dark @click="toRecipe">
       <v-img
         :aspect-ratio="16 / 9"
@@ -16,7 +16,7 @@
           class="align-content-space-between justify-center"
         >
           <v-row justify="space-between">
-            <v-col cols="auto" class="pa-0">
+            <v-col class="col-auto pa-0">
               <template v-for="tag in recipe.tags">
                 <v-chip
                   class="ma-2"
@@ -27,7 +27,7 @@
               </template>
             </v-col>
             <v-spacer />
-            <v-col cols="auto" class="pa-0">
+            <v-col class="col-auto pa-0">
               <v-menu close-on-click offset-y>
                 <template v-slot:activator="{ on }">
                   <v-btn

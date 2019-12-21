@@ -43,9 +43,7 @@
             ></v-chip>
           </template>
           <v-col
-            cols="12"
-            sm="8"
-            class="py-2 order-2 order-sm-0"
+            class="col-12 col-sm-8 py-2 order-2 order-sm-0"
             v-if="editing"
           >
             <v-combobox
@@ -99,9 +97,7 @@
         >
           <v-col
             v-if="editing"
-            cols="12"
-            sm="8"
-            class="py-0 order-2 order-sm-0"
+            class="col-12 col-sm-8 py-0 order-2 order-sm-0"
           >
             <v-text-field
               dark
@@ -125,7 +121,7 @@
               @input="$emit('update:subtitle', $event)"
             />
           </v-col>
-          <v-col v-else cols="12" sm="6" class="py-0 order-2 order-sm-0">
+          <v-col v-else class="col-12 col-sm-8 py-0 order-2 order-sm-0">
             <v-card-title class="white--text pl-0 mb-2">
               <span
                 :class="{

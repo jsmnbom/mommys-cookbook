@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height">
     <v-row justify="center" no-gutters>
-      <v-col cols="auto">
+      <v-col class="col-12">
         <v-progress-circular
           :size="70"
           :width="7"

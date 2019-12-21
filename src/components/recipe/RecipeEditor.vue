@@ -2,7 +2,7 @@
   <div>
     <v-card id="toolbar" class="px-3">
       <v-row class="align-center">
-        <v-col cols="auto" class="py-1">
+        <v-col class="py-1 col-auto">
           <v-btn
             icon
             class="ql-header"
@@ -28,7 +28,7 @@
             <v-icon>{{mdiFormatHeader3}}</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="auto" class="py-1">
+        <v-col class="py-1 col-auto">
           <v-btn icon class="ql-bold" v-mutate.attr.class="onMutate">
             <v-icon>{{mdiFormatBold}}</v-icon>
           </v-btn>
@@ -42,7 +42,7 @@
             <v-icon>{{mdiFormatStrikethrough}}</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="auto" class="py-1">
+        <v-col class="py-1 col-auto">
           <v-btn
             icon
             class="ql-list"
@@ -60,7 +60,7 @@
             <v-icon>{{mdiFormatListBulleted}}</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="auto" class="py-1">
+        <v-col class="py-1 col-auto">
           <v-btn icon class="ql-align" value="" v-mutate.attr.class="onMutate">
             <v-icon>{{mdiFormatAlignLeft}}</v-icon>
           </v-btn>
@@ -74,7 +74,7 @@
             <v-icon>{{mdiFormatAlignJustify}}</v-icon>
           </v-btn> -->
         </v-col>
-        <v-col cols="auto" class="py-0">
+        <v-col class="py-0 col-auto">
           <v-btn icon class="ql-clean" v-mutate.attr.class="onMutate">
             <v-icon>{{mdiFormatClear}}</v-icon>
           </v-btn>

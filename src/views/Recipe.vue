@@ -29,7 +29,7 @@
 
     <v-container v-else>
       <v-row align="start" justify="space-around">
-        <v-col cols="8">
+        <v-col class="col-8">
           <RecipeContent
             :saving="saving"
             v-bind.sync="editedRecipe"
@@ -38,7 +38,7 @@
             @update:imgFile="imgFile = $event"
           />
         </v-col>
-        <v-col cols="4">
+        <v-col class="col-4">
           <RecipeIngredientsList
             v-bind.sync="editedRecipe"
             @update:addIngredientsText="addIngredientsText = $event"

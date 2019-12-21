@@ -26,7 +26,7 @@
       </v-toolbar>
       <v-card
         :loading="saving"
-        style="height: calc(100vh - 56px);"
+        :style="$vuetify.breakpoint.xsOnly ? 'min-height: calc(100vh - 56px);': ''"
         class="d-flex flex-column"
       >
         <template slot="progress">
@@ -39,7 +39,7 @@
         <v-card-text class="grow">
           <v-container>
             <v-row justify="center" align="center">
-              <v-col cols="auto">
+              <v-col class="col-auto">
                 <v-avatar
                   size="128"
                   :class="{
@@ -63,7 +63,7 @@
               </v-col>
             </v-row>
             <v-row align="center" justify="center">
-              <v-col cols="12" md="8">
+              <v-col class="col-12 col-md-8">
                 <v-text-field
                   outlined
                   ref="title"
@@ -73,7 +73,7 @@
                   v-model="title"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12">
+              <v-col class="col-12">
                 <v-combobox
                   v-model="sharedWith"
                   :items="[]"
