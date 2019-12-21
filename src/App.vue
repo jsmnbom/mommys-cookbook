@@ -7,6 +7,7 @@
       <MissingLoginState v-if="!loading && !loggedIn" />
       <CookbookDialog />
       <transition
+        v-if="!loading && loggedIn"
         :name="transitionName"
         mode="out-in"
         @before-enter="beforeEnter"
@@ -14,7 +15,7 @@
         <router-view :key="routerKey"></router-view>
       </transition>
     </v-content>
-    <ActionButton />
+    <ActionButton v-if="!loading && loggedIn" />
   </v-app>
 </template>
 
@@ -35,7 +36,7 @@ export default Vue.extend({
     title: "Home",
     titleTemplate: "%s - Mommy's Cookbook",
     meta: [
-      {name: "description", content: "The app for all your cookbook needs."}
+      { name: "description", content: "The app for all your cookbook needs." }
     ]
   },
   computed: {

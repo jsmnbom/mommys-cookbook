@@ -5,85 +5,88 @@
     </v-toolbar-title>
 
     <v-spacer v-if="$vuetify.breakpoint.mdAndUp" />
-
-    <v-text-field
-      clearable
-      dense
-      flat
-      solo-inverted
-      hide-details
-      :prepend-inner-icon="mdiMagnify"
-      label="Search"
-      class="flex-basis-20"
-      v-model="search"
-    ></v-text-field>
-    <template v-if="$vuetify.breakpoint.mdAndUp">
-      <v-spacer />
-      <v-select
-        dense
-        flat
-        solo-inverted
-        hide-details
-        :items="tagItems"
+    <template v-if="loggedIn">
+      <v-text-field
         clearable
-        multiple
-        label="Filter tags"
-        class="flex-basis-20"
-        v-model="tags"
-      >
-        <template v-slot:prepend-inner class="ma-0">
-          <v-icon>{{ mdiTagOutline }}</v-icon>
-          <v-btn
-            icon
-            small
-            @click.stop="toggleTagFiltersAnd"
-            @mouseup.stop
-            v-if="tags.length > 1"
-          >
-            <span>{{ tagFiltersAnd ? "AND" : "OR" }}</span>
-          </v-btn>
-        </template>
-      </v-select>
-      <v-spacer />
-      <v-select
-        v-model="sortBy"
         dense
         flat
         solo-inverted
         hide-details
-        :items="sortByItems"
-        label="Sort by"
-        class="flex-basis-20 tags"
-      >
-        <template v-slot:prepend-inner class="ma-0">
-          <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
-            <v-icon>{{
-              sortByDesc ? mdiSortDescending : mdiSortAscending
-            }}</v-icon>
-          </v-btn>
-        </template>
-      </v-select>
+        :prepend-inner-icon="mdiMagnify"
+        label="Search"
+        class="flex-basis-20"
+        v-model="search"
+      ></v-text-field>
+      <template v-if="$vuetify.breakpoint.mdAndUp">
+        <v-spacer />
+        <v-select
+          dense
+          flat
+          solo-inverted
+          hide-details
+          :items="tagItems"
+          clearable
+          multiple
+          label="Filter tags"
+          class="flex-basis-20"
+          v-model="tags"
+        >
+          <template v-slot:prepend-inner class="ma-0">
+            <v-icon>{{ mdiTagOutline }}</v-icon>
+            <v-btn
+              icon
+              small
+              @click.stop="toggleTagFiltersAnd"
+              @mouseup.stop
+              v-if="tags.length > 1"
+            >
+              <span>{{ tagFiltersAnd ? "AND" : "OR" }}</span>
+            </v-btn>
+          </template>
+        </v-select>
+        <v-spacer />
+        <v-select
+          v-model="sortBy"
+          dense
+          flat
+          solo-inverted
+          hide-details
+          :items="sortByItems"
+          label="Sort by"
+          class="flex-basis-20 tags"
+        >
+          <template v-slot:prepend-inner class="ma-0">
+            <v-btn icon small @click.stop="toggleSortByDesc" @mouseup.stop>
+              <v-icon>{{
+                sortByDesc ? mdiSortDescending : mdiSortAscending
+              }}</v-icon>
+            </v-btn>
+          </template>
+        </v-select>
+      </template>
+      <template v-else>
+        <v-btn
+          icon
+          @click="extensionFilter = !extensionFilter"
+          :input-value="extensionFilter"
+          class="ms-1"
+        >
+          <v-icon>{{ mdiTag }}</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          @click="extensionSort = !extensionSort"
+          :input-value="extensionSort"
+          class="ms-1"
+        >
+          <v-icon>{{ mdiSort }}</v-icon>
+        </v-btn>
+      </template>
     </template>
-    <template v-else>
-      <v-btn
-        icon
-        @click="extensionFilter = !extensionFilter"
-        :input-value="extensionFilter"
-        class="ms-1"
-      >
-        <v-icon>{{ mdiTag }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click="extensionSort = !extensionSort"
-        :input-value="extensionSort"
-        class="ms-1"
-      >
-        <v-icon>{{ mdiSort }}</v-icon>
-      </v-btn>
-    </template>
-
-    <template v-slot:extension v-if="extensionFilter || extensionSort">
+    <template
+      v-slot:extension
+      v-if="(extensionFilter || extensionSort) && loggedIn"
+    >
       <v-select
         v-if="extensionFilter"
         v-model="tags"
@@ -197,6 +200,7 @@ export default Vue.extend({
       "cookbookTagFiltersAnd",
       "cookbookSearch"
     ]),
+    ...mapState("account", ["loggedIn"]),
     ...mapGetters(["cookbookTags"]),
     sortBy: {
       get(): string[] {

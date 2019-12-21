@@ -21,7 +21,7 @@ const routes = [
     }
   },
   {
-    path: "/CookbookNavbar/:cookbookId",
+    path: "/cookbook/:cookbookId",
     name: "cookbook",
     components: {
       default: Cookbook,
