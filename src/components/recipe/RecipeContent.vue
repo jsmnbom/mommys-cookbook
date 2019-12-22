@@ -201,6 +201,12 @@
         :value="content"
         @input="$emit('update:content', $event)"
         v-if="editing"
+        :class="{
+            'body-1': true,
+            recipeContent: true,
+            'black--text': !$vuetify.theme.dark,
+            'white--text': $vuetify.theme.dark
+          }"
       />
       <v-container v-else>
         <div
@@ -217,7 +223,6 @@
       <v-container class="px-7">
         <v-text-field
           v-if="editing"
-          dark
           label="Recipe source"
           class="title"
           placeholder="Url or book title + page"
@@ -395,34 +400,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style scoped>
-.responsive-img {
-  width: 100%;
-  height: auto;
-}
-.recipeContent >>> img {
-  max-width: 100%;
-}
-</style>
-
-<style>
-.theme--light .recipeContent {
-  color: black;
-}
-.theme--dark .recipeContent {
-  color: white;
-}
-.theme--light a.source {
-  color: var(--v-primary-darken2);
-}
-.theme--dark a.source {
-  color: var(--v-primary-lighten2);
-}
-</style>
-
-<style>
-.clipboardDiv * {
-  display: none;
-}
-</style>
