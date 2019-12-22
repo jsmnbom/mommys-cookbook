@@ -141,4 +141,9 @@ export default Vue.extend({
   opacity: 0;
   transform: translate(-2em, 0);
 }
+
+body {
+  overscroll-behavior-y: contain;
+}
+
 </style>

@@ -26,7 +26,6 @@
                 ></v-chip>
               </template>
             </v-col>
-            <v-spacer />
             <v-col class="col-2 col-xs-1 pa-0 justify-end d-flex">
               <v-menu close-on-click offset-y>
                 <template v-slot:activator="{ on }">
