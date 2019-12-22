@@ -24,7 +24,7 @@
         >
           <v-list-item-content>
             <v-list-item-title>
-              {{ item.recipe.title || "(untitled recipe)" }}
+              {{ item.recipe ? item.recipe.title : "(untitled recipe)" }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>

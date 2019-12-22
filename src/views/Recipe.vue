@@ -56,7 +56,7 @@ import { mapState, mapGetters } from "vuex";
 import { Route } from "vue-router";
 import { v4 as uuid } from "uuid";
 
-import { Swiper } from 'swiper/js/swiper.esm.js';
+import { Swiper } from "swiper/js/swiper.esm.js";
 import "swiper/src/swiper.scss";
 
 import RecipeIngredientsList from "@/components/recipe/RecipeIngredientsList.vue";
@@ -223,16 +223,27 @@ export default Vue.extend({
     },
     editedRecipe(newEditedRecipe, oldEditedRecipe) {
       this.$nextTick(() => {
-        if (newEditedRecipe && !oldEditedRecipe) {
-          this.tabsSwiper = new Swiper(this.$refs.recipeTabs as HTMLElement);
-          this.tabsSwiper.on("slideChange", () => {
-            this.activeTab = this.tabs[this.tabsSwiper.realIndex];
-          });
+        if (
+          newEditedRecipe &&
+          !oldEditedRecipe &&
+          this.tabsSwiper === null &&
+          this.tabbed
+        ) {
+          this.registerSwiper();
+        }
+      });
+    },
+    tabbed(newTabbed) {
+      this.$nextTick(() => {
+        if (newTabbed && this.tabsSwiper === null) {
+          this.registerSwiper();
         }
       });
     },
     activeTab(newActiveTab) {
-      this.tabsSwiper.slideTo(this.tabs.indexOf(newActiveTab));
+      if (this.tabsSwiper !== null) {
+        this.tabsSwiper.slideTo(this.tabs.indexOf(newActiveTab));
+      }
     }
   },
   beforeDestroy() {
@@ -279,6 +290,12 @@ export default Vue.extend({
         }
       }
       return "";
+    },
+    registerSwiper() {
+      this.tabsSwiper = new Swiper(this.$refs.recipeTabs as HTMLElement);
+      this.tabsSwiper.on("slideChange", () => {
+        this.activeTab = this.tabs[this.tabsSwiper.realIndex];
+      });
     }
   }
 });

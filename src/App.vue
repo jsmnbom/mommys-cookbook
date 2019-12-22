@@ -100,7 +100,7 @@ export default Vue.extend({
 
 <style>
 .mb-actionbutton {
-  margin-bottom: 96px;
+  margin-bottom: 88px;
 }
 
 .fade-enter-active,
