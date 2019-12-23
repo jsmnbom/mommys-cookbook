@@ -9,6 +9,7 @@
       :custom-sort="sort"
       :custom-filter="filter"
       :search="cookbookSearch"
+      :loading="!recipesLoaded"
       no-data-text="No recipes found in cookbook"
     >
       <template v-slot:default="props">
@@ -21,6 +22,13 @@
               :recipe="recipe"
             />
           </template>
+        </v-row>
+      </template>
+      <template #loading>
+        <v-row>
+          <v-col class="col-12 col-sm-6" v-for="n in 6" :key="n">
+            <v-skeleton-loader type="image" class="loader"> </v-skeleton-loader>
+          </v-col>
         </v-row>
       </template>
     </v-data-iterator>
@@ -83,7 +91,8 @@ export default Vue.extend({
       "cookbookSortByDesc",
       "cookbookTagFilters",
       "cookbookTagFiltersAnd",
-      "cookbookSearch"
+      "cookbookSearch",
+      "recipesLoaded"
     ])
   },
   methods: {
@@ -210,3 +219,10 @@ export default Vue.extend({
   }
 });
 </script>
+
+
+<style scoped>
+.loader >>> .v-skeleton-loader__image {
+  padding-bottom: 50%;
+}
+</style>

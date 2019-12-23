@@ -28,6 +28,7 @@ interface State {
   cookbookTagFiltersAnd: boolean
   cookbookSearch: string,
   recipeActiveTab: string,
+  recipesLoaded: boolean
 }
 
 const state: State = {
@@ -48,6 +49,7 @@ const state: State = {
   cookbookTagFiltersAnd: false,
   cookbookSearch: "",
   recipeActiveTab: "content",
+  recipesLoaded: false
 };
 
 
@@ -146,7 +148,10 @@ const store = new Vuex.Store({
     },
     setRecipeActiveTab(state, recipeActiveTab) {
       state.recipeActiveTab = recipeActiveTab;
-    }
+    },
+    setRecipesLoaded(state, recipesLoaded) {
+    state.recipesLoaded = recipesLoaded;
+  }
   },
   getters: {
     cookbookTags: state => (cookbookId: string): string[] => {
@@ -155,8 +160,10 @@ const store = new Vuex.Store({
   },
   actions: {
     fetchRecipes({ commit }, cookbookId) {
+      commit("setRecipesLoaded", false)
       commit("clearRecipes", cookbookId);
       const inner = (querySnapshot: QuerySnapshot) => {
+        commit("setRecipesLoaded", true)
         querySnapshot.docChanges().forEach(function(change) {
           if (change.type === "added" || change.type === "modified") {
             const data = change.doc.data();
