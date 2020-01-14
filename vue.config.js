@@ -29,12 +29,12 @@ module.exports = {
           "v-input__prepend-inner",
           "v-input__icon",
           "v-input__icon--prepend-inner",
-          "red",
-          "green",
-          "lighten-4",
-          "lighten-1",
-          "darken-4",
-          "darken-1"
+          "red--text",
+          "green--text",
+          "text--lighten-4",
+          "text--lighten-1",
+          "text--darken-4",
+          "text--darken-1"
         ]
       })
     ]
