@@ -49,7 +49,7 @@
                   }"
                 >
                   <v-img v-if="img" :src="img" />
-                  <v-icon v-else x-large>mdiImage</v-icon>
+                  <v-icon v-else x-large>{{mdiImage}}</v-icon>
                   <v-btn
                     fab
                     small
