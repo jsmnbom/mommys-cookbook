@@ -24,7 +24,18 @@ module.exports = {
           path.join(__dirname, "./**/*.vue"),
           path.join(__dirname, "./src/**/*.ts"),
           path.join(__dirname, "./node_modules/vuetify/src/**/*.ts")
-        ])
+        ]),
+        whitelist: [
+          "v-input__prepend-inner",
+          "v-input__icon",
+          "v-input__icon--prepend-inner",
+          "red",
+          "green",
+          "lighten-4",
+          "lighten-1",
+          "darken-4",
+          "darken-1"
+        ]
       })
     ]
   }
