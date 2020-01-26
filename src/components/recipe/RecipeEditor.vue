@@ -210,7 +210,7 @@ export default Vue.extend({
   watch: {
     value(val) {
       if (val != this.quill.root.innerHTML && !this.quill.hasFocus()) {
-        this.quill.root.innerHTML = val;
+        //this.quill.root.innerHTML = val;
       }
     }
   },
@@ -244,7 +244,7 @@ export default Vue.extend({
         return this.container.querySelector(".ql-editor").innerHTML;
       };
       Quill.prototype.getWordCount = function() {
-        return this.container.querySelector(".ql-editor").innerText.length;
+        return this.container.querySelector(".ql-editor").innerHTML.length;
       };
     },
     registerEditorEventListeners() {
@@ -302,5 +302,6 @@ export default Vue.extend({
 }
 .ql-editor {
   padding: 16px 32px;
+  white-space: pre-wrap;
 }
 </style>
